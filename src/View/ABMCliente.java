@@ -33,11 +33,11 @@ public class ABMCliente extends JFrame {
         JTextField dniField = new JTextField();
         add(dniField);
 
-        add(new JLabel("Tipo de Membresía:"));
+        add(new JLabel("Tipo de Model.Entity.Membresía:"));
         JTextField tipoMembresiaField = new JTextField();
         add(tipoMembresiaField);
 
-        add(new JLabel("Estado de Pago:"));
+        add(new JLabel("Estado de Model.Entity.Pago:"));
         JCheckBox estadoPagoCheck = new JCheckBox();
         add(estadoPagoCheck);
 
@@ -61,7 +61,7 @@ public class ABMCliente extends JFrame {
         setVisible(true);
     }
 
-    // Main para mostrar la ventana
+    // Main.Main para mostrar la ventana
     public static void main(String[] args) {
         new ABMCliente();
     }

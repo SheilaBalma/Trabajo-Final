@@ -1,8 +1,8 @@
-package Modelo;
+package Model.Entity;
 
 import java.util.List;
 
-public class Cliente {
+public class Cliente extends Persona{
 
     // Atributos
     private int idCliente;
@@ -12,7 +12,7 @@ public class Cliente {
     private String dni;
     private String tipoMembresia;
     private boolean estadoPago;
-    private List<String> listaActividades;
+    private List<String> listaActividades; //Cuando haya clase actividadaes es una lista de actividades
 
     // Constructor vacío
     public Cliente() {}
