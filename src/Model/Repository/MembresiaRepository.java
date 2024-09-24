@@ -1,4 +1,4 @@
 package Model.Repository;
 
-public class MembresiaRepository implements Repository{
+public interface MembresiaRepository {
 }
