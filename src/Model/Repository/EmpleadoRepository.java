@@ -1,4 +1,4 @@
 package Model.Repository;
 
-public interface EmpleadoRepository {
+public class EmpleadoRepository implements Repository{
 }
