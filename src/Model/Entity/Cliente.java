@@ -14,15 +14,15 @@ public class Cliente extends Persona{
     private boolean estadoPago;
     private List<String> listaActividades; //Cuando haya clase actividadaes es una lista de actividades
 
-    // Constructor vacío
-    public Cliente() {}
-
-    // Constructor con todos los atributos
-    public Cliente(int idCliente, String nombre, int edad, String telefono, String dni, String tipoMembresia, boolean estadoPago, List<String> listaActividades) {
+    public Cliente() {
+        super();
+    }
+    public Cliente(String nombre, String apellido, String direccion, String telefono, String email,
+                   int idCliente, int edad, String dni, String tipoMembresia,
+                   boolean estadoPago, List<String> listaActividades) {
+        super(nombre, apellido, direccion, telefono, email);
         this.idCliente = idCliente;
-        this.nombre = nombre;
         this.edad = edad;
-        this.telefono = telefono;
         this.dni = dni;
         this.tipoMembresia = tipoMembresia;
         this.estadoPago = estadoPago;
