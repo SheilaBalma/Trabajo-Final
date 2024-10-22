@@ -1,9 +1,8 @@
 package Model.DAO;
 
+import Model.Database.DatabaseConnection;
 import Model.Entity.Cliente;
 import Model.Repository.ClienteRepository;
-import Model.Database.DatabaseConnection;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +10,11 @@ import java.util.List;
 public class ClienteDAO implements ClienteRepository {
 
     @Override
-    public Cliente crear(Cliente cliente) {
-        String sql = "INSERT INTO clientes (nombre, apellido, direccion, telefono, email, dni, edad, tipoMembresia, estadoPago) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public Cliente crear(Cliente cliente) throws SQLException {
+        String sql = "INSERT INTO clientes (nombre, apellido, direccion, telefono, email, dni, edad, tipoMembresia, estadoPago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            // Establecer los parámetros para el INSERT
             preparedStatement.setString(1, cliente.getNombre());
             preparedStatement.setString(2, cliente.getApellido());
             preparedStatement.setString(3, cliente.getDireccion());
@@ -28,101 +25,75 @@ public class ClienteDAO implements ClienteRepository {
             preparedStatement.setString(8, cliente.getTipoMembresia());
             preparedStatement.setBoolean(9, cliente.isEstadoPago());
 
-            // Ejecutar el INSERT
-            int affectedRows = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-            // Verificar si la inserción fue exitosa
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        cliente.setIdCliente(generatedKeys.getInt(1)); // Obtener el ID generado automáticamente
-                        System.out.println("Cliente creado correctamente.");
-                    }
-                }
-            } else {
-                System.out.println("Error al crear el cliente. No se insertaron filas.");
+            // Obtener la clave generada automáticamente (idCliente)
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                cliente.setIdCliente(generatedKeys.getInt(1));
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error en la inserción del cliente.");
         }
         return cliente;
     }
 
-
     @Override
-    public void modificar(Cliente cliente) {
-        // Modificación basada en idCliente en lugar de dni para mayor fiabilidad
-        String sql = "UPDATE clientes SET nombre = ?, apellido = ?, direccion = ?, telefono = ?, email = ?, edad = ?, tipoMembresia = ?, estadoPago = ? "
-                + "WHERE idCliente = ?";
+    public void modificar(Cliente cliente) throws SQLException {
+        String sql = "UPDATE clientes SET nombre=?, apellido=?, direccion=?, telefono=?, email=?, dni=?, edad=?, tipoMembresia=?, estadoPago=? WHERE idCliente=?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            if (connection == null || connection.isClosed()) {
-                throw new SQLException("Error: La conexión a la base de datos está cerrada o no es válida.");
-            }
 
             preparedStatement.setString(1, cliente.getNombre());
             preparedStatement.setString(2, cliente.getApellido());
             preparedStatement.setString(3, cliente.getDireccion());
             preparedStatement.setString(4, cliente.getTelefono());
             preparedStatement.setString(5, cliente.getEmail());
-            preparedStatement.setInt(6, cliente.getEdad());
-            preparedStatement.setString(7, cliente.getTipoMembresia());
-            preparedStatement.setBoolean(8, cliente.isEstadoPago());
-            preparedStatement.setInt(9, cliente.getIdCliente());  // Ahora basado en idCliente
-
+            preparedStatement.setString(6, cliente.getDni());
+            preparedStatement.setInt(7, cliente.getEdad());
+            preparedStatement.setString(8, cliente.getTipoMembresia());
+            preparedStatement.setBoolean(9, cliente.isEstadoPago());
+            preparedStatement.setInt(10, cliente.getIdCliente());
             preparedStatement.executeUpdate();
-            System.out.println("Cliente modificado correctamente.");
-
-        } catch (SQLException e) {
-            System.err.println("Error al modificar el cliente: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     @Override
-    public void eliminar(int idCliente) {
+    public void eliminar(int idCliente) throws SQLException {
         String sql = "DELETE FROM clientes WHERE idCliente = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, idCliente);
-            int affectedRows = preparedStatement.executeUpdate();
-
-            if (affectedRows > 0) {
-                System.out.println("Cliente eliminado correctamente.");
-            } else {
-                System.out.println("No se encontró ningún cliente con el ID proporcionado.");
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("No se encontró el cliente con id: " + idCliente);
             }
-
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar el cliente: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     @Override
-    public List<Cliente> buscar(String nombre, String dni) {
-        List<Cliente> clientes = new ArrayList<>();
-
-        // Modificación para manejar búsqueda flexible con nombre y DNI
-        String sql = "SELECT * FROM clientes WHERE (? = '' OR nombre LIKE ?) AND (? = '' OR dni = ?)";
-
+    public void eliminarPorDNI(String dni) throws SQLException {
+        String sql = "DELETE FROM clientes WHERE dni = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // Si nombre o DNI no se proporcionan, se consideran vacíos
-            preparedStatement.setString(1, nombre);
-            preparedStatement.setString(2, "%" + nombre + "%");
-            preparedStatement.setString(3, dni);
-            preparedStatement.setString(4, dni);
+            preparedStatement.setString(1, dni);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("No se encontró el cliente con DNI: " + dni);
+            }
+        }
+    }
 
-            // Ejecutar la consulta
+    @Override
+    public List<Cliente> buscar(String nombre, String dni) throws SQLException {
+        String sql = "SELECT * FROM clientes WHERE nombre LIKE ? OR dni = ?";
+        List<Cliente> clientes = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, "%" + nombre + "%");
+            preparedStatement.setString(2, dni);
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            // Procesar los resultados
             while (resultSet.next()) {
                 Cliente cliente = new Cliente();
                 cliente.setIdCliente(resultSet.getInt("idCliente"));
@@ -135,27 +106,19 @@ public class ClienteDAO implements ClienteRepository {
                 cliente.setEdad(resultSet.getInt("edad"));
                 cliente.setTipoMembresia(resultSet.getString("tipoMembresia"));
                 cliente.setEstadoPago(resultSet.getBoolean("estadoPago"));
-
                 clientes.add(cliente);
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return clientes;
     }
 
     @Override
-    public List<Cliente> list() {
+    public List<Cliente> list() throws SQLException {
         List<Cliente> clientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);
              ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            if (connection == null || connection.isClosed()) {
-                throw new SQLException("Error: La conexión a la base de datos está cerrada o no es válida.");
-            }
 
             while (resultSet.next()) {
                 Cliente cliente = new Cliente();
@@ -180,6 +143,11 @@ public class ClienteDAO implements ClienteRepository {
         return clientes;
     }
 }
+
+
+
+
+
 
 
 

@@ -1,35 +1,18 @@
 package Model.Entity;
 
-import java.util.List;
-
-public class Cliente extends Persona{
-
-    // Atributos
+public class Cliente {
     private int idCliente;
     private String nombre;
-    private int edad;
+    private String apellido;
+    private String direccion;
     private String telefono;
+    private String email;
     private String dni;
+    private int edad;
     private String tipoMembresia;
     private boolean estadoPago;
-    private List<String> listaActividades; //Cuando haya clase actividadaes es una lista de actividades
 
-    public Cliente() {
-        super();
-    }
-    public Cliente(String nombre, String apellido, String direccion, String telefono, String email,
-                   int idCliente, int edad, String dni, String tipoMembresia,
-                   boolean estadoPago, List<String> listaActividades) {
-        super(nombre, apellido, direccion, telefono, email);
-        this.idCliente = idCliente;
-        this.edad = edad;
-        this.dni = dni;
-        this.tipoMembresia = tipoMembresia;
-        this.estadoPago = estadoPago;
-        this.listaActividades = listaActividades;
-    }
-
-    // Getters y Setters
+    // Getters y Setters para cada campo
     public int getIdCliente() {
         return idCliente;
     }
@@ -46,12 +29,20 @@ public class Cliente extends Persona{
         this.nombre = nombre;
     }
 
-    public int getEdad() {
-        return edad;
+    public String getApellido() {
+        return apellido;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getTelefono() {
@@ -62,12 +53,28 @@ public class Cliente extends Persona{
         this.telefono = telefono;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getDni() {
         return dni;
     }
 
     public void setDni(String dni) {
         this.dni = dni;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
     }
 
     public String getTipoMembresia() {
@@ -85,37 +92,6 @@ public class Cliente extends Persona{
     public void setEstadoPago(boolean estadoPago) {
         this.estadoPago = estadoPago;
     }
-
-    public List<String> getListaActividades() {
-        return listaActividades;
-    }
-
-    public void setListaActividades(List<String> listaActividades) {
-        this.listaActividades = listaActividades;
-    }
-
-    // Método equals para comparar objetos Cliente
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Cliente cliente = (Cliente) obj;
-        return idCliente == cliente.idCliente && dni.equals(cliente.dni);
-    }
-
-    // Método toString para representar el objeto como cadena
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "idCliente=" + idCliente +
-                ", nombre='" + nombre + '\'' +
-                ", edad=" + edad +
-                ", telefono='" + telefono + '\'' +
-                ", dni='" + dni + '\'' +
-                ", tipoMembresia='" + tipoMembresia + '\'' +
-                ", estadoPago=" + estadoPago +
-                ", listaActividades=" + listaActividades +
-                '}';
-    }
 }
+
 

@@ -4,7 +4,6 @@ import Controller.ClienteController;
 import Model.Entity.Cliente;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -138,8 +137,8 @@ public class ABMCliente extends JFrame {
                     cliente.setTipoMembresia(tipoMembresiaField.getText());
                     cliente.setEstadoPago(estadoPagoCheck.isSelected());
 
-                    clienteController.agregarCliente(cliente);
-                    JOptionPane.showMessageDialog(null, "Cliente agregado con éxito");
+                    String resultado = clienteController.agregarCliente(cliente);
+                    JOptionPane.showMessageDialog(null, resultado);
 
                     limpiarCampos();
                 } catch (Exception ex) {
@@ -152,15 +151,20 @@ public class ABMCliente extends JFrame {
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nombre = nombreField.getText();
-                String dni = dniField.getText();
+                String nombre = nombreField.getText().trim();
+                String dni = dniField.getText().trim();
+
+                if (nombre.isEmpty() && dni.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre o DNI para buscar.");
+                    return;
+                }
 
                 List<Cliente> clientes = clienteController.buscarClientes(nombre, dni);
 
-                if (clientes.isEmpty()) {
+                if (clientes == null || clientes.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No se encontró ningún cliente.");
                 } else {
-                    Cliente cliente = clientes.get(0);
+                    Cliente cliente = clientes.get(0); // Mostrar el primer resultado encontrado
                     idClienteField.setText(String.valueOf(cliente.getIdCliente()));
                     nombreField.setText(cliente.getNombre());
                     apellidoField.setText(cliente.getApellido());
@@ -175,12 +179,16 @@ public class ABMCliente extends JFrame {
             }
         });
 
-
         // Funcionalidad del botón modificar
         modificarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    if (idClienteField.getText().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Debe buscar y seleccionar un cliente antes de modificar.");
+                        return;
+                    }
+
                     Cliente cliente = new Cliente();
                     cliente.setIdCliente(Integer.parseInt(idClienteField.getText())); // Modificación por ID
                     cliente.setNombre(nombreField.getText());
@@ -193,22 +201,34 @@ public class ABMCliente extends JFrame {
                     cliente.setTipoMembresia(tipoMembresiaField.getText());
                     cliente.setEstadoPago(estadoPagoCheck.isSelected());
 
-                    clienteController.modificarCliente(cliente);
-                    JOptionPane.showMessageDialog(null, "Cliente modificado con éxito");
+                    String resultado = clienteController.modificarCliente(cliente);
+                    JOptionPane.showMessageDialog(null, resultado);
+
+                    limpiarCampos(); // Limpia los campos después de modificar
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al modificar cliente: " + ex.getMessage());
                 }
             }
         });
 
+        // Funcionalidad del botón eliminar
         eliminarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int idCliente = Integer.parseInt(idClienteField.getText()); // Eliminación por ID
-                    clienteController.eliminarCliente(idCliente);
-                    JOptionPane.showMessageDialog(null, "Cliente eliminado con éxito");
-                    limpiarCampos();
+                    String dni = dniField.getText().trim();
+
+                    if (dni.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Debe ingresar un DNI para eliminar.");
+                        return;
+                    }
+
+                    int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar el cliente con DNI: " + dni + "?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+                    if (confirmacion == JOptionPane.YES_OPTION) {
+                        String resultado = clienteController.eliminarClientePorDNI(dni);
+                        JOptionPane.showMessageDialog(null, resultado);
+                        limpiarCampos(); // Limpia los campos tras la eliminación
+                    }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al eliminar cliente: " + ex.getMessage());
                 }
@@ -216,7 +236,7 @@ public class ABMCliente extends JFrame {
         });
     }
 
-        private void limpiarCampos() {
+    private void limpiarCampos() {
         idClienteField.setText("");
         nombreField.setText("");
         apellidoField.setText("");
@@ -230,9 +250,13 @@ public class ABMCliente extends JFrame {
     }
 
     public static void main(String[] args) {
-        new ABMCliente().setVisible(true);
+        ABMCliente abmCliente = new ABMCliente();
+        abmCliente.setVisible(true);
     }
 }
+
+
+
 
 
 

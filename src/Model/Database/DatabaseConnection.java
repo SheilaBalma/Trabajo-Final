@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/gym_management"; // Cambia 'tu_base_de_datos' por el nombre de tu base de datos
-    private static final String USER = "root"; // Cambia 'tu_usuario' por tu usuario de MySQL
-    private static final String PASSWORD = "santyggz"; // Cambia 'tu_contraseña' por tu contraseña de MySQL
+    private static final String URL = "jdbc:mysql://localhost:3306/gym_management";
+    private static final String USER = "root";
+    private static final String PASSWORD = "santyggz";
 
     private static Connection connection;
 
@@ -41,4 +41,5 @@ public class DatabaseConnection {
         }
     }
 }
+
 
