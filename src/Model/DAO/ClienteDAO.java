@@ -14,6 +14,18 @@ import java.util.List;
 
 public class ClienteDAO implements ClienteRepository {
 
+    public boolean existeDni(String dni) throws SQLException {
+        String query = "SELECT COUNT(*) FROM clientes WHERE dni = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, dni);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(1) > 0;
+        }
+    }
+
     @Override
     public Cliente crear(Cliente cliente) throws SQLException {
         String sql = "INSERT INTO clientes (nombre, apellido, direccion, telefono, email, dni, edad, tipoMembresia, estadoPago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -96,7 +108,7 @@ public class ClienteDAO implements ClienteRepository {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(2, dni);
+            preparedStatement.setString(    1, dni);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Cliente cliente = new Cliente();

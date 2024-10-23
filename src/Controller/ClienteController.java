@@ -1,9 +1,8 @@
 package Controller;
-
 import Model.DAO.ClienteDAO;
 import Model.Entity.Cliente;
-import java.util.List;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ClienteController {
@@ -14,9 +13,12 @@ public class ClienteController {
     }
 
     // Agregar un cliente con validaciones previas
-    public String agregarCliente(Cliente cliente) {
+    public String agregarCliente(Cliente cliente) throws SQLException {
         if (cliente == null || cliente.getDni() == null || cliente.getDni().isEmpty()) {
             return "Error: El cliente o el DNI no pueden ser nulos o vacíos.";
+        }
+        if (clienteDAO.existeDni(cliente.getDni())) {
+            return "Error: El DNI ya está registrado en el sistema.";
         }
 
         try {
@@ -65,7 +67,7 @@ public class ClienteController {
         }
     }
 
-    // Buscar clientes por nombre o DNI
+    // Buscar clientes por DNI
     public List<Cliente> buscarClientes(String dni) {
         try {
             return clienteDAO.buscar( dni);
