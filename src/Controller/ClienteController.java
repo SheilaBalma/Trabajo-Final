@@ -4,6 +4,8 @@ import Model.DAO.ClienteDAO;
 import Model.Entity.Cliente;
 import java.util.List;
 
+import java.util.List;
+
 public class ClienteController {
     private ClienteDAO clienteDAO;
 
@@ -64,11 +66,11 @@ public class ClienteController {
     }
 
     // Buscar clientes por nombre o DNI
-    public List<Cliente> buscarClientes(String nombre, String dni) {
+    public List<Cliente> buscarClientes(String dni) {
         try {
-            return clienteDAO.buscar(nombre, dni);
+            return clienteDAO.buscar( dni);
         } catch (Exception e) {
-            System.err.println("Error al buscar los clientes: " + e.getMessage());
+            System.err.println("Error al buscar el cliente: " + e.getMessage());
             return null;
         }
     }

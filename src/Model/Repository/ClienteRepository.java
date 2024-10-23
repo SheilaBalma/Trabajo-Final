@@ -9,7 +9,7 @@ public interface ClienteRepository {
     void modificar(Cliente cliente) throws SQLException;
     void eliminar(int idCliente) throws SQLException;
     void eliminarPorDNI(String dni) throws SQLException;
-    List<Cliente> buscar(String nombre, String dni) throws SQLException;
+    List<Cliente> buscar( String dni) throws SQLException;
     List<Cliente> list() throws SQLException;
 }
 

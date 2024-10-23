@@ -4,6 +4,11 @@ import Model.Database.DatabaseConnection;
 import Model.Entity.Cliente;
 import Model.Repository.ClienteRepository;
 import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,13 +90,12 @@ public class ClienteDAO implements ClienteRepository {
     }
 
     @Override
-    public List<Cliente> buscar(String nombre, String dni) throws SQLException {
-        String sql = "SELECT * FROM clientes WHERE nombre LIKE ? OR dni = ?";
+    public List<Cliente> buscar(String dni) throws SQLException {
+        String sql = "SELECT * FROM clientes WHERE dni = ?";
         List<Cliente> clientes = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, "%" + nombre + "%");
             preparedStatement.setString(2, dni);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

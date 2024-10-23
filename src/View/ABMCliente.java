@@ -159,7 +159,7 @@ public class ABMCliente extends JFrame {
                     return;
                 }
 
-                List<Cliente> clientes = clienteController.buscarClientes(nombre, dni);
+                List<Cliente> clientes = clienteController.buscarClientes(dni);
 
                 if (clientes == null || clientes.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No se encontró ningún cliente.");
