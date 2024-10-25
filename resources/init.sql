@@ -14,3 +14,12 @@ CREATE TABLE gym_management.clientes (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE gym_management.empleados (
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    direccion VARCHAR(200),
+    telefono VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    CONSTRAINT empleados_PK PRIMARY KEY (nombre)
+);
