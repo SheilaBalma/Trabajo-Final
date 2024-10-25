@@ -5,17 +5,17 @@ import java.util.Objects;
 public abstract class Persona {
     protected String nombre;
     protected String apellido;
-    protected String direccion;
+    protected String dirección;
     protected String telefono;
     protected String email;
 public Persona(){
 
 }
     // Constructor
-    public Persona(String nombre, String apellido, String direccion, String telefono, String email) {
+    public Persona(String nombre, String apellido, String dirección, String telefono, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.direccion = direccion;
+        this.dirección = dirección;
         this.telefono = telefono;
         this.email = email;
     }
@@ -37,12 +37,12 @@ public Persona(){
         this.apellido = apellido;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getDirección() {
+        return dirección;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setDirección(String dirección) {
+        this.dirección = dirección;
     }
 
     public String getTelefono() {
@@ -84,7 +84,7 @@ public Persona(){
         return "Persona{" +
                 "nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
-                ", direccion='" + direccion + '\'' +
+                ", direccion='" + dirección + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", email='" + email + '\'' +
                 '}';
