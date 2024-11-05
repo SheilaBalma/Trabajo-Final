@@ -8,9 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ABMCliente extends JFrame {
-
-    private JTextField idClienteField;
+public class ABMCliente extends JPanel {
     private JTextField nombreField;
     private JTextField apellidoField;
     private JTextField direccionField;
@@ -23,81 +21,72 @@ public class ABMCliente extends JFrame {
 
     private ClienteController clienteController;
 
-    public ABMCliente() {
-        clienteController = new ClienteController(); // Instancia del controlador
 
-        setTitle("ABM Cliente");
-        setSize(800, 600); // Ajustamos el tamaño de la ventana
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null); // Usamos diseño absoluto para control manual de componentes
+
+    public ABMCliente() {
+        clienteController = new ClienteController();
+
+        setLayout(null);
 
         // Inicializar componentes visuales
-        JLabel idClienteLabel = new JLabel("ID Cliente:");
-        idClienteLabel.setBounds(30, 30, 150, 25);
-        idClienteField = new JTextField();
-        idClienteField.setBounds(180, 30, 150, 25);
-        idClienteField.setEditable(false); // El ID es autogenerado, por eso no es editable.
-
         JLabel nombreLabel = new JLabel("Nombre:");
-        nombreLabel.setBounds(30, 70, 150, 25);
+        nombreLabel.setBounds(30, 30, 150, 25);
         nombreField = new JTextField();
-        nombreField.setBounds(180, 70, 150, 25);
+        nombreField.setBounds(180, 30, 150, 25);
 
         JLabel apellidoLabel = new JLabel("Apellido:");
-        apellidoLabel.setBounds(30, 110, 150, 25);
+        apellidoLabel.setBounds(30, 70, 150, 25);
         apellidoField = new JTextField();
-        apellidoField.setBounds(180, 110, 150, 25);
+        apellidoField.setBounds(180, 70, 150, 25);
 
         JLabel direccionLabel = new JLabel("Dirección:");
-        direccionLabel.setBounds(30, 150, 150, 25);
+        direccionLabel.setBounds(30, 110, 150, 25);
         direccionField = new JTextField();
-        direccionField.setBounds(180, 150, 150, 25);
+        direccionField.setBounds(180, 110, 150, 25);
 
         JLabel telefonoLabel = new JLabel("Teléfono:");
-        telefonoLabel.setBounds(30, 190, 150, 25);
+        telefonoLabel.setBounds(30, 150, 150, 25);
         telefonoField = new JTextField();
-        telefonoField.setBounds(180, 190, 150, 25);
+        telefonoField.setBounds(180, 150, 150, 25);
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setBounds(30, 230, 150, 25);
+        emailLabel.setBounds(30, 190, 150, 25);
         emailField = new JTextField();
-        emailField.setBounds(180, 230, 150, 25);
+        emailField.setBounds(180, 190, 150, 25);
 
         JLabel dniLabel = new JLabel("DNI:");
-        dniLabel.setBounds(30, 270, 150, 25);
+        dniLabel.setBounds(30, 230, 150, 25);
         dniField = new JTextField();
-        dniField.setBounds(180, 270, 150, 25);
+        dniField.setBounds(180, 230, 150, 25);
 
         JLabel edadLabel = new JLabel("Edad:");
-        edadLabel.setBounds(30, 310, 150, 25);
+        edadLabel.setBounds(30, 270, 150, 25);
         edadField = new JTextField();
-        edadField.setBounds(180, 310, 150, 25);
+        edadField.setBounds(180, 270, 150, 25);
 
         JLabel tipoMembresiaLabel = new JLabel("Tipo de Membresía:");
-        tipoMembresiaLabel.setBounds(30, 350, 150, 25);
+        tipoMembresiaLabel.setBounds(30, 310, 150, 25);
         tipoMembresiaField = new JTextField();
-        tipoMembresiaField.setBounds(180, 350, 150, 25);
+        tipoMembresiaField.setBounds(180, 310, 150, 25);
 
         JLabel estadoPagoLabel = new JLabel("Estado de Pago:");
-        estadoPagoLabel.setBounds(30, 390, 150, 25);
+        estadoPagoLabel.setBounds(30, 350, 150, 25);
         estadoPagoCheck = new JCheckBox();
-        estadoPagoCheck.setBounds(180, 390, 150, 25);
+        estadoPagoCheck.setBounds(180, 350, 150, 25);
 
         JButton agregarButton = new JButton("Agregar");
-        agregarButton.setBounds(400, 70, 150, 40);
+        agregarButton.setBounds(400, 30, 150, 40);
 
         JButton buscarButton = new JButton("Buscar");
-        buscarButton.setBounds(400, 150, 150, 40);
+        buscarButton.setBounds(400, 90, 150, 40);
 
         JButton modificarButton = new JButton("Modificar");
-        modificarButton.setBounds(400, 230, 150, 40);
+        modificarButton.setBounds(400, 150, 150, 40);
 
         JButton eliminarButton = new JButton("Eliminar");
-        eliminarButton.setBounds(400, 310, 150, 40);
+        eliminarButton.setBounds(400, 210, 150, 40);
 
-        // Añadir componentes al JFrame
-        add(idClienteLabel);
-        add(idClienteField);
+        // Añadir componentes al JPanel
         add(nombreLabel);
         add(nombreField);
         add(apellidoLabel);
@@ -165,7 +154,7 @@ public class ABMCliente extends JFrame {
                     JOptionPane.showMessageDialog(null, "No se encontró ningún cliente.");
                 } else {
                     Cliente cliente = clientes.get(0); // Mostrar el primer resultado encontrado
-                    idClienteField.setText(String.valueOf(cliente.getIdCliente()));
+//                    idClienteField.setText(String.valueOf(cliente.getIdCliente()));
                     nombreField.setText(cliente.getNombre());
                     apellidoField.setText(cliente.getApellido());
                     direccionField.setText(cliente.getDireccion());
@@ -184,13 +173,13 @@ public class ABMCliente extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (idClienteField.getText().isEmpty()) {
+                    if (dniField.getText().isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Debe buscar y seleccionar un cliente antes de modificar.");
                         return;
                     }
 
                     Cliente cliente = new Cliente();
-                    cliente.setIdCliente(Integer.parseInt(idClienteField.getText())); // Modificación por ID
+//                    cliente.setIdCliente(Integer.parseInt(idClienteField.getText())); // Modificación por ID
                     cliente.setNombre(nombreField.getText());
                     cliente.setApellido(apellidoField.getText());
                     cliente.setDireccion(direccionField.getText());
@@ -235,9 +224,7 @@ public class ABMCliente extends JFrame {
             }
         });
     }
-
     private void limpiarCampos() {
-        idClienteField.setText("");
         nombreField.setText("");
         apellidoField.setText("");
         direccionField.setText("");
@@ -248,17 +235,7 @@ public class ABMCliente extends JFrame {
         tipoMembresiaField.setText("");
         estadoPagoCheck.setSelected(false);
     }
-
-    public static void main(String[] args) {
-        ABMCliente abmCliente = new ABMCliente();
-        abmCliente.setVisible(true);
     }
-}
-
-
-
-
-
 
 
 

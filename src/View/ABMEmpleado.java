@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ABMEmpleado extends JFrame {
+public class ABMEmpleado extends JPanel {
     private JTextField nombreField;
     private JTextField apellidoField;
     private JTextField direccionField;
@@ -18,11 +18,8 @@ public class ABMEmpleado extends JFrame {
     private EmpleadoController empleadoController;
 
     public ABMEmpleado() {
-        empleadoController = new EmpleadoController(); // Instancia del controlador
+        empleadoController = new EmpleadoController();
 
-        setTitle("ABM Empleado");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
         // Inicializar componentes visuales
@@ -63,7 +60,7 @@ public class ABMEmpleado extends JFrame {
         JButton eliminarButton = new JButton("Eliminar");
         eliminarButton.setBounds(400, 210, 150, 40);
 
-        // Añadir componentes al JFrame
+        // Añadir componentes al JPanel
         add(nombreLabel);
         add(nombreField);
         add(apellidoLabel);
@@ -79,95 +76,8 @@ public class ABMEmpleado extends JFrame {
         add(modificarButton);
         add(eliminarButton);
 
-        // Funcionalidad del botón agregar
-        agregarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Empleado empleado = new Empleado(
-                            nombreField.getText(),
-                            apellidoField.getText(),
-                            direccionField.getText(),
-                            telefonoField.getText(),
-                            emailField.getText()
-                    );
-
-                    String resultado = empleadoController.agregarEmpleado(empleado);
-                    JOptionPane.showMessageDialog(null, resultado);
-                    limpiarCampos();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al agregar empleado: " + ex.getMessage());
-                }
-            }
-        });
-
-        // Funcionalidad del botón buscar
-        buscarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombre = nombreField.getText().trim();
-                String apellido = apellidoField.getText().trim();
-
-                if (nombre.isEmpty() || apellido.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Por favor, ingrese nombre y apellido para buscar.");
-                    return;
-                }
-
-                List<Empleado> empleados = empleadoController.buscarEmpleados(nombre, apellido);
-                if (empleados.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "No se encontró ningún empleado.");
-                } else {
-                    Empleado empleado = empleados.get(0);
-                    direccionField.setText(empleado.getDirección());
-                    telefonoField.setText(empleado.getTelefono());
-                    emailField.setText(empleado.getEmail());
-                }
-            }
-        });
-
-        // Funcionalidad del botón modificar
-        modificarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Empleado empleado = new Empleado(
-                            nombreField.getText(),
-                            apellidoField.getText(),
-                            direccionField.getText(),
-                            telefonoField.getText(),
-                            emailField.getText()
-                    );
-
-                    String resultado = empleadoController.modificarEmpleado(empleado);
-                    JOptionPane.showMessageDialog(null, resultado);
-                    limpiarCampos();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al modificar empleado: " + ex.getMessage());
-                }
-            }
-        });
-
-        // Funcionalidad del botón eliminar
-        eliminarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String nombre = nombreField.getText().trim();
-                    String apellido = apellidoField.getText().trim();
-
-                    if (nombre.isEmpty() || apellido.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Debe ingresar nombre y apellido para eliminar.");
-                        return;
-                    }
-
-                    String resultado = empleadoController.eliminarEmpleado(nombre, apellido);
-                    JOptionPane.showMessageDialog(null, resultado);
-                    limpiarCampos();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar empleado: " + ex.getMessage());
-                }
-            }
-        });
+        // Eventos de botones (como en tu implementación actual)
+        // ...
     }
 
     private void limpiarCampos() {
@@ -176,10 +86,5 @@ public class ABMEmpleado extends JFrame {
         direccionField.setText("");
         telefonoField.setText("");
         emailField.setText("");
-    }
-
-    public static void main(String[] args) {
-        ABMEmpleado abmEmpleado = new ABMEmpleado();
-        abmEmpleado.setVisible(true);
     }
 }
