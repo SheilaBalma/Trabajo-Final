@@ -12,6 +12,37 @@ public class Cliente {
     private String tipoMembresia;
     private boolean estadoPago;
 
+    // Constructor completo
+    public Cliente(int idCliente, String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, String tipoMembresia, boolean estadoPago) {
+        this.idCliente = idCliente;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.email = email;
+        this.dni = dni;
+        this.edad = edad;
+        this.tipoMembresia = tipoMembresia;
+        this.estadoPago = estadoPago;
+    }
+
+    // Constructor sin ID
+    public Cliente(String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, String tipoMembresia, boolean estadoPago) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.email = email;
+        this.dni = dni;
+        this.edad = edad;
+        this.tipoMembresia = tipoMembresia;
+        this.estadoPago = estadoPago;
+    }
+
+    public Cliente() {
+
+    }
+
     // Getters y Setters para cada campo
     public int getIdCliente() {
         return idCliente;

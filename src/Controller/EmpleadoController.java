@@ -33,6 +33,10 @@ public class EmpleadoController {
         return empleadoDAO.buscarEmpleados(nombre, apellido);
     }
 
+    public List<Empleado> listarEmpleados() {
+        return empleadoDAO.listarEmpleados();
+    }
+
     public String eliminarEmpleado(String nombre, String apellido) {
         if (empleadoDAO.eliminarEmpleado(nombre, apellido)) {
             return "Empleado eliminado exitosamente.";

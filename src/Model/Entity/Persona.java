@@ -81,12 +81,11 @@ public Persona(){
     // Método toString para imprimir información de la Persona
     @Override
     public String toString() {
-        return "Persona{" +
-                "nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", direccion='" + dirección + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return
+                "nombre:'" + nombre + '\'' +
+                ", apellido:'" + apellido + '\'' +
+                ", direccion:'" + dirección + '\'' +
+                ", telefono:'" + telefono + '\'' +
+                ", email:'" + email ;
     }
 }

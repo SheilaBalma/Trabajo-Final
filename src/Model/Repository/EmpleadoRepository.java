@@ -8,4 +8,6 @@ public interface EmpleadoRepository {
     boolean modificarEmpleado(Empleado empleado);
     List<Empleado> buscarEmpleados(String nombre, String apellido);
     boolean eliminarEmpleado(String nombre, String apellido);
+
+    List<Empleado> listarEmpleados();
 }

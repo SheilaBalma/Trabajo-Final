@@ -9,12 +9,12 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ABMEmpleado extends JPanel {
+
     private JTextField nombreField;
     private JTextField apellidoField;
     private JTextField direccionField;
     private JTextField telefonoField;
     private JTextField emailField;
-
     private EmpleadoController empleadoController;
 
     public ABMEmpleado() {
@@ -22,7 +22,6 @@ public class ABMEmpleado extends JPanel {
 
         setLayout(null);
 
-        // Inicializar componentes visuales
         JLabel nombreLabel = new JLabel("Nombre:");
         nombreLabel.setBounds(30, 30, 150, 25);
         nombreField = new JTextField();
@@ -48,19 +47,17 @@ public class ABMEmpleado extends JPanel {
         emailField = new JTextField();
         emailField.setBounds(180, 190, 150, 25);
 
-        JButton agregarButton = new JButton("Agregar");
-        agregarButton.setBounds(400, 30, 150, 40);
+        JButton addButton = new JButton("Agregar Empleado");
+        addButton.setBounds(30, 230, 150, 25);
+        JButton updateButton = new JButton("Actualizar Empleado");
+        updateButton.setBounds(190, 230, 150, 25);
+        JButton deleteButton = new JButton("Eliminar Empleado");
+        deleteButton.setBounds(350, 230, 150, 25);
+        JButton listButton = new JButton("Listar Empleados");
+        listButton.setBounds(510, 230, 150, 25);
+        JButton searchButton = new JButton("Buscar Empleado");  // Agregar botón de búsqueda
+        searchButton.setBounds(670, 230, 150, 25);
 
-        JButton buscarButton = new JButton("Buscar");
-        buscarButton.setBounds(400, 90, 150, 40);
-
-        JButton modificarButton = new JButton("Modificar");
-        modificarButton.setBounds(400, 150, 150, 40);
-
-        JButton eliminarButton = new JButton("Eliminar");
-        eliminarButton.setBounds(400, 210, 150, 40);
-
-        // Añadir componentes al JPanel
         add(nombreLabel);
         add(nombreField);
         add(apellidoLabel);
@@ -71,13 +68,76 @@ public class ABMEmpleado extends JPanel {
         add(telefonoField);
         add(emailLabel);
         add(emailField);
-        add(agregarButton);
-        add(buscarButton);
-        add(modificarButton);
-        add(eliminarButton);
+        add(addButton);
+        add(updateButton);
+        add(deleteButton);
+        add(listButton);
+        add(searchButton);  // Añadir el botón de búsqueda al panel
 
-        // Eventos de botones (como en tu implementación actual)
-        // ...
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nombreField.getText();
+                String apellido = apellidoField.getText();
+                String direccion = direccionField.getText();
+                String telefono = telefonoField.getText();
+                String email = emailField.getText();
+                String message = empleadoController.agregarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                JOptionPane.showMessageDialog(null, message);
+                limpiarCampos();
+            }
+        });
+
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nombreField.getText();
+                String apellido = apellidoField.getText();
+                String direccion = direccionField.getText();
+                String telefono = telefonoField.getText();
+                String email = emailField.getText();
+                String message = empleadoController.modificarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                JOptionPane.showMessageDialog(null, message);
+                limpiarCampos();
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nombreField.getText();
+                String apellido = apellidoField.getText();
+                String message = empleadoController.eliminarEmpleado(nombre, apellido);
+                JOptionPane.showMessageDialog(null, message);
+                limpiarCampos();
+            }
+        });
+
+        listButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Empleado> empleados = empleadoController.listarEmpleados();
+                StringBuilder listado = new StringBuilder("Lista de Empleados:\n");
+                for (Empleado empleado : empleados) {
+                    listado.append(empleado).append("\n");
+                }
+                JOptionPane.showMessageDialog(null, listado.toString());
+            }
+        });
+
+        searchButton.addActionListener(new ActionListener() {  // Acción para el botón de búsqueda
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nombreField.getText();
+                String apellido = apellidoField.getText();
+                List<Empleado> empleados = empleadoController.buscarEmpleados(nombre, apellido);
+                StringBuilder resultados = new StringBuilder("Resultados de la búsqueda:\n");
+                for (Empleado empleado : empleados) {
+                    resultados.append(empleado).append("\n");
+                }
+                JOptionPane.showMessageDialog(null, resultados.toString());
+            }
+        });
     }
 
     private void limpiarCampos() {

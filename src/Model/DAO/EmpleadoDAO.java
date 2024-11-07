@@ -96,4 +96,30 @@ public class EmpleadoDAO implements EmpleadoRepository {
             return false;
         }
     }
+
+    // Método para listar todos los empleados
+    @Override
+    public List<Empleado> listarEmpleados() {
+        String query = "SELECT * FROM empleados";
+        List<Empleado> empleados = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Empleado empleado = new Empleado(
+                        resultSet.getString("nombre"),
+                        resultSet.getString("apellido"),
+                        resultSet.getString("dirección"),
+                        resultSet.getString("telefono"),
+                        resultSet.getString("email")
+                );
+                empleados.add(empleado);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return empleados;
+    }
 }

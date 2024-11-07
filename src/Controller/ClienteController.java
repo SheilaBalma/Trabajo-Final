@@ -1,4 +1,5 @@
 package Controller;
+
 import Model.DAO.ClienteDAO;
 import Model.Entity.Cliente;
 
@@ -6,83 +7,35 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ClienteController {
+
     private ClienteDAO clienteDAO;
 
     public ClienteController() {
-        this.clienteDAO = new ClienteDAO();
+        clienteDAO = new ClienteDAO();
     }
 
-    // Agregar un cliente con validaciones previas
-    public String agregarCliente(Cliente cliente) throws SQLException {
-        if (cliente == null || cliente.getDni() == null || cliente.getDni().isEmpty()) {
-            return "Error: El cliente o el DNI no pueden ser nulos o vacíos.";
-        }
-        if (clienteDAO.existeDni(cliente.getDni())) {
-            return "Error: El DNI ya está registrado en el sistema.";
-        }
-
-        try {
-            clienteDAO.crear(cliente);
-            return "Cliente creado exitosamente.";
-        } catch (Exception e) {
-            return "Error al crear el cliente: " + e.getMessage();
-        }
+    public void agregarCliente(Cliente cliente) throws SQLException {
+        clienteDAO.crear(cliente);
     }
 
-    // Modificar cliente con validaciones
-    public String modificarCliente(Cliente cliente) {
-        if (cliente == null || cliente.getDni() == null || cliente.getDni().isEmpty()) {
-            return "Error: El cliente o el DNI no pueden ser nulos o vacíos.";
-        }
-
-        try {
-            clienteDAO.modificar(cliente);
-            return "Cliente modificado exitosamente.";
-        } catch (Exception e) {
-            return "Error al modificar el cliente: " + e.getMessage();
-        }
+    public void modificarCliente(Cliente cliente) throws SQLException {
+        clienteDAO.modificar(cliente);
     }
 
-    // Eliminar cliente por DNI con manejo de errores
-    public String eliminarClientePorDNI(String dni) {
-        if (dni == null || dni.isEmpty()) {
-            return "Error: El DNI no puede ser nulo o vacío.";
-        }
-
-        try {
-            clienteDAO.eliminarPorDNI(dni);
-            return "Cliente eliminado exitosamente.";
-        } catch (Exception e) {
-            return "Error al eliminar el cliente: " + e.getMessage();
-        }
+    public void eliminarClientePorDNI(String dni) throws SQLException {
+        clienteDAO.eliminarPorDNI(dni);
     }
 
-    // Listar todos los clientes
-    public List<Cliente> listarClientes() {
-        try {
-            return clienteDAO.list();
-        } catch (Exception e) {
-            System.err.println("Error al listar los clientes: " + e.getMessage());
-            return null;
-        }
+    public List<Cliente> listarClientes() throws SQLException {
+        return clienteDAO.list();
     }
 
-    // Buscar clientes por DNI
-    public List<Cliente> buscarClientes(String dni) {
-        try {
-            return clienteDAO.buscar( dni);
-        } catch (Exception e) {
-            System.err.println("Error al buscar el cliente: " + e.getMessage());
-            return null;
-        }
+    public List<Cliente> buscarClientePorDNI(String dni) throws SQLException {
+        return clienteDAO.buscar(dni);  // Llamamos al método 'buscar' de ClienteDAO
     }
+
+    public boolean verificarExistenciaPorDNI(String dni) throws SQLException {
+        return clienteDAO.buscarPorDNI(dni).size() > 0;
+    }
+
 }
-
-
-
-
-
-
-
-
-
