@@ -14,7 +14,7 @@ import java.util.List;
 public class EmpleadoDAO implements EmpleadoRepository {
 
     // Método para agregar un empleado a la base de datos
-    public boolean agregarEmpleado(Empleado empleado) {
+    public boolean agregarEmpleado(Empleado empleado) throws SQLException {
         String query = "INSERT INTO empleados (nombre, apellido, dirección, telefono, email) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -27,14 +27,11 @@ public class EmpleadoDAO implements EmpleadoRepository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
     // Método para modificar un empleado existente en la base de datos
-    public boolean modificarEmpleado(Empleado empleado) {
+    public boolean modificarEmpleado(Empleado empleado) throws SQLException {
         String query = "UPDATE empleados SET dirección = ?, telefono = ?, email = ? WHERE nombre = ? AND apellido = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -47,14 +44,11 @@ public class EmpleadoDAO implements EmpleadoRepository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
     // Método para buscar empleados por nombre y apellido
-    public List<Empleado> buscarEmpleados(String nombre, String apellido) {
+    public List<Empleado> buscarEmpleados(String nombre, String apellido) throws SQLException {
         String query = "SELECT * FROM empleados WHERE nombre = ? AND apellido = ?";
         List<Empleado> empleados = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
@@ -74,14 +68,12 @@ public class EmpleadoDAO implements EmpleadoRepository {
                 );
                 empleados.add(empleado);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return empleados;
     }
 
     // Método para eliminar un empleado por nombre y apellido
-    public boolean eliminarEmpleado(String nombre, String apellido) {
+    public boolean eliminarEmpleado(String nombre, String apellido) throws SQLException {
         String query = "DELETE FROM empleados WHERE nombre = ? AND apellido = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -91,15 +83,12 @@ public class EmpleadoDAO implements EmpleadoRepository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
     // Método para listar todos los empleados
     @Override
-    public List<Empleado> listarEmpleados() {
+    public List<Empleado> listarEmpleados() throws SQLException {
         String query = "SELECT * FROM empleados";
         List<Empleado> empleados = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
@@ -117,8 +106,6 @@ public class EmpleadoDAO implements EmpleadoRepository {
                 );
                 empleados.add(empleado);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return empleados;
     }

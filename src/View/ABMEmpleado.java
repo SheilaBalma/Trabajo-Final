@@ -6,6 +6,7 @@ import Model.Entity.Empleado;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ABMEmpleado extends JPanel {
@@ -82,8 +83,12 @@ public class ABMEmpleado extends JPanel {
                 String direccion = direccionField.getText();
                 String telefono = telefonoField.getText();
                 String email = emailField.getText();
-                String message = empleadoController.agregarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
-                JOptionPane.showMessageDialog(null, message);
+                try {
+                    String message = empleadoController.agregarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                    JOptionPane.showMessageDialog(null, message);  // Mostrar mensaje de éxito o error
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al agregar el empleado: ");
+                }
                 limpiarCampos();
             }
         });
@@ -96,8 +101,12 @@ public class ABMEmpleado extends JPanel {
                 String direccion = direccionField.getText();
                 String telefono = telefonoField.getText();
                 String email = emailField.getText();
-                String message = empleadoController.modificarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
-                JOptionPane.showMessageDialog(null, message);
+                try {
+                    String message = empleadoController.modificarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                    JOptionPane.showMessageDialog(null, message);  // Mostrar mensaje de éxito o error
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al modificar el empleado: " + ex.getMessage());
+                }
                 limpiarCampos();
             }
         });
@@ -107,16 +116,26 @@ public class ABMEmpleado extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String nombre = nombreField.getText();
                 String apellido = apellidoField.getText();
-                String message = empleadoController.eliminarEmpleado(nombre, apellido);
-                JOptionPane.showMessageDialog(null, message);
+                try {
+                    String message = empleadoController.eliminarEmpleado(nombre, apellido);
+                    JOptionPane.showMessageDialog(null, message);  // Mostrar mensaje de éxito o error
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al eliminar el empleado: " + ex.getMessage());
+                }
                 limpiarCampos();
             }
         });
 
+
         listButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Empleado> empleados = empleadoController.listarEmpleados();
+                List<Empleado> empleados = null;
+                try {
+                    empleados = empleadoController.listarEmpleados();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 StringBuilder listado = new StringBuilder("Lista de Empleados:\n");
                 for (Empleado empleado : empleados) {
                     listado.append(empleado).append("\n");
@@ -128,19 +147,36 @@ public class ABMEmpleado extends JPanel {
         searchButton.addActionListener(new ActionListener() {  // Acción para el botón de búsqueda
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nombre = nombreField.getText();
-                String apellido = apellidoField.getText();
-                List<Empleado> empleados = empleadoController.buscarEmpleados(nombre, apellido);
-                StringBuilder resultados = new StringBuilder("Resultados de la búsqueda:\n");
-                for (Empleado empleado : empleados) {
-                    resultados.append(empleado).append("\n");
+                String nombre = nombreField.getText().trim();
+                String apellido = apellidoField.getText().trim();
+
+                // Verificar si los campos están vacíos
+                if (nombre.isEmpty() && apellido.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre y apellido para buscar.");
+                    return;  // Salir del método si no hay datos para buscar
                 }
-                JOptionPane.showMessageDialog(null, resultados.toString());
+
+                List<Empleado> empleados = null;
+                try {
+                    empleados = empleadoController.buscarEmpleados(nombre, apellido);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al buscar el empleado: " + ex.getMessage());
+                    return;  // Salir del método si hay un error de búsqueda
+                }
+
+                if (empleados == null || empleados.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "No se encontraron empleados.");
+                } else {
+                    StringBuilder resultados = new StringBuilder("Resultados de la búsqueda:\n");
+                    for (Empleado empleado : empleados) {
+                        resultados.append(empleado).append("\n");
+                    }
+                    JOptionPane.showMessageDialog(null, resultados.toString());
+                }
             }
         });
     }
-
-    private void limpiarCampos() {
+        private void limpiarCampos() {
         nombreField.setText("");
         apellidoField.setText("");
         direccionField.setText("");

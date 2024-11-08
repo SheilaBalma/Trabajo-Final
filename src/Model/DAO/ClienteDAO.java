@@ -16,18 +16,6 @@ import static Model.Database.DatabaseConnection.getConnection;
 
 public class ClienteDAO implements ClienteRepository {
 
-    public boolean existeDni(String dni) throws SQLException {
-        String query = "SELECT COUNT(*) FROM clientes WHERE dni = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setString(1, dni);
-            ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1) > 0;
-        }
-    }
-
     @Override
     public Cliente crear(Cliente cliente) throws SQLException {
         String sql = "INSERT INTO clientes (nombre, apellido, direccion, telefono, email, dni, edad, tipoMembresia, estadoPago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -73,20 +61,6 @@ public class ClienteDAO implements ClienteRepository {
             preparedStatement.setBoolean(9, cliente.isEstadoPago());
             preparedStatement.setInt(10, cliente.getIdCliente());
             preparedStatement.executeUpdate();
-        }
-    }
-
-    @Override
-    public void eliminar(int idCliente) throws SQLException {
-        String sql = "DELETE FROM clientes WHERE idCliente = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, idCliente);
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new SQLException("No se encontró el cliente con id: " + idCliente);
-            }
         }
     }
 
