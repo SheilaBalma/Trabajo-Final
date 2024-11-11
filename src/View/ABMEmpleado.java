@@ -16,13 +16,14 @@ public class ABMEmpleado extends JPanel {
     private JTextField direccionField;
     private JTextField telefonoField;
     private JTextField emailField;
+    private JTextArea resultadoArea;
     private EmpleadoController empleadoController;
 
     public ABMEmpleado() {
         empleadoController = new EmpleadoController();
-
         setLayout(null);
 
+        // Configuración de etiquetas y campos de texto
         JLabel nombreLabel = new JLabel("Nombre:");
         nombreLabel.setBounds(30, 30, 150, 25);
         nombreField = new JTextField();
@@ -48,6 +49,7 @@ public class ABMEmpleado extends JPanel {
         emailField = new JTextField();
         emailField.setBounds(180, 190, 150, 25);
 
+        // Botones para acciones
         JButton addButton = new JButton("Agregar Empleado");
         addButton.setBounds(30, 230, 150, 25);
         JButton updateButton = new JButton("Actualizar Empleado");
@@ -56,9 +58,15 @@ public class ABMEmpleado extends JPanel {
         deleteButton.setBounds(350, 230, 150, 25);
         JButton listButton = new JButton("Listar Empleados");
         listButton.setBounds(510, 230, 150, 25);
-        JButton searchButton = new JButton("Buscar Empleado");  // Agregar botón de búsqueda
+        JButton searchButton = new JButton("Buscar Empleado");
         searchButton.setBounds(670, 230, 150, 25);
 
+        // Área de texto para mostrar resultados
+        resultadoArea = new JTextArea();
+        resultadoArea.setBounds(30, 270, 790, 150);
+        resultadoArea.setEditable(false);
+
+        // Añadir componentes al panel
         add(nombreLabel);
         add(nombreField);
         add(apellidoLabel);
@@ -73,114 +81,148 @@ public class ABMEmpleado extends JPanel {
         add(updateButton);
         add(deleteButton);
         add(listButton);
-        add(searchButton);  // Añadir el botón de búsqueda al panel
+        add(searchButton);
+        add(resultadoArea);
 
+        // Acción para agregar empleado
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty() ||
+                        direccionField.getText().isEmpty() || telefonoField.getText().isEmpty() ||
+                        emailField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+                    return;
+                }
+
                 String nombre = nombreField.getText();
                 String apellido = apellidoField.getText();
                 String direccion = direccionField.getText();
                 String telefono = telefonoField.getText();
                 String email = emailField.getText();
+
                 try {
-                    String message = empleadoController.agregarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
-                    JOptionPane.showMessageDialog(null, message);  // Mostrar mensaje de éxito o error
+                    empleadoController.agregarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                    JOptionPane.showMessageDialog(null, "Empleado agregado con éxito.");
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al agregar el empleado: ");
+                    JOptionPane.showMessageDialog(null, "Error al agregar el empleado: " + ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
                 limpiarCampos();
             }
         });
 
+        // Acción para actualizar empleado
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nombre y Apellido son obligatorios para actualizar.");
+                    return;
+                }
+
                 String nombre = nombreField.getText();
                 String apellido = apellidoField.getText();
                 String direccion = direccionField.getText();
                 String telefono = telefonoField.getText();
                 String email = emailField.getText();
+
                 try {
-                    String message = empleadoController.modificarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
-                    JOptionPane.showMessageDialog(null, message);  // Mostrar mensaje de éxito o error
+                    empleadoController.modificarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                    JOptionPane.showMessageDialog(null, "Empleado actualizado con éxito.");
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Error al modificar el empleado: " + ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
                 limpiarCampos();
             }
         });
 
+        // Acción para eliminar empleado
         deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nombre y Apellido son obligatorios para eliminar.");
+                    return;
+                }
+
+                String nombre = nombreField.getText();
+                String apellido = apellidoField.getText();
+
+                try {
+                    empleadoController.eliminarEmpleado(nombre, apellido);
+                    JOptionPane.showMessageDialog(null, "Empleado eliminado con éxito.");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al eliminar el empleado: " + ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+                limpiarCampos();
+            }
+        });
+
+        // Acción para listar empleados
+        listButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    List<Empleado> empleados = empleadoController.listarEmpleados();
+                    if (empleados.isEmpty()) {
+                        resultadoArea.setText("No se encontraron empleados.");
+                    } else {
+                        mostrarResultados(empleados);
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al listar empleados: " + ex.getMessage());
+                }
+            }
+        });
+
+        // Acción para buscar empleado
+        searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String nombre = nombreField.getText();
                 String apellido = apellidoField.getText();
                 try {
-                    String message = empleadoController.eliminarEmpleado(nombre, apellido);
-                    JOptionPane.showMessageDialog(null, message);  // Mostrar mensaje de éxito o error
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar el empleado: " + ex.getMessage());
-                }
-                limpiarCampos();
-            }
-        });
-
-
-        listButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<Empleado> empleados = null;
-                try {
-                    empleados = empleadoController.listarEmpleados();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                StringBuilder listado = new StringBuilder("Lista de Empleados:\n");
-                for (Empleado empleado : empleados) {
-                    listado.append(empleado).append("\n");
-                }
-                JOptionPane.showMessageDialog(null, listado.toString());
-            }
-        });
-
-        searchButton.addActionListener(new ActionListener() {  // Acción para el botón de búsqueda
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombre = nombreField.getText().trim();
-                String apellido = apellidoField.getText().trim();
-
-                // Verificar si los campos están vacíos
-                if (nombre.isEmpty() && apellido.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre y apellido para buscar.");
-                    return;  // Salir del método si no hay datos para buscar
-                }
-
-                List<Empleado> empleados = null;
-                try {
-                    empleados = empleadoController.buscarEmpleados(nombre, apellido);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al buscar el empleado: " + ex.getMessage());
-                    return;  // Salir del método si hay un error de búsqueda
-                }
-
-                if (empleados == null || empleados.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "No se encontraron empleados.");
-                } else {
-                    StringBuilder resultados = new StringBuilder("Resultados de la búsqueda:\n");
-                    for (Empleado empleado : empleados) {
-                        resultados.append(empleado).append("\n");
+                    List<Empleado> empleados = empleadoController.buscarEmpleado(nombre, apellido);
+                    if (empleados.isEmpty()) {
+                        resultadoArea.setText("No se encontró ningún empleado con ese nombre y apellido.");
+                    } else {
+                        mostrarResultados(empleados);
                     }
-                    JOptionPane.showMessageDialog(null, resultados.toString());
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al buscar empleado: " + ex.getMessage());
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
             }
         });
     }
-        private void limpiarCampos() {
+
+    private void limpiarCampos() {
         nombreField.setText("");
         apellidoField.setText("");
         direccionField.setText("");
         telefonoField.setText("");
         emailField.setText("");
     }
+
+    // Método para mostrar los resultados en resultadoArea
+    private void mostrarResultados(List<Empleado> empleados) {
+        StringBuilder resultados = new StringBuilder();
+        for (Empleado empleado : empleados) {
+            resultados.append("Nombre: ").append(empleado.getNombre())
+                    .append(", Apellido: ").append(empleado.getApellido())
+                    .append(", Dirección: ").append(empleado.getDireccion())
+                    .append(", Teléfono: ").append(empleado.getTelefono())
+                    .append(", Email: ").append(empleado.getEmail())
+                    .append("\n");
+        }
+        resultadoArea.setText(resultados.toString());
+    }
 }
+

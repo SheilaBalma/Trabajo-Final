@@ -5,9 +5,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface EmpleadoRepository {
-    boolean agregarEmpleado(Empleado empleado) throws SQLException;
-    boolean modificarEmpleado(Empleado empleado) throws SQLException;  // Agregar throws SQLException
+    Empleado agregarEmpleado(Empleado empleado) throws SQLException;
+    Empleado modificarEmpleado(Empleado empleado) throws SQLException;
     List<Empleado> buscarEmpleados(String nombre, String apellido) throws SQLException;
-    boolean eliminarEmpleado(String nombre, String apellido) throws SQLException;
+    void eliminarEmpleado(String nombre, String apellido) throws SQLException;
     List<Empleado> listarEmpleados() throws SQLException;
 }
+

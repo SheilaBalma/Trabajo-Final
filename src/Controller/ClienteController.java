@@ -14,15 +14,21 @@ public class ClienteController {
         clienteDAO = new ClienteDAO();
     }
 
-    public void agregarCliente(Cliente cliente) throws SQLException {
-        clienteDAO.crear(cliente);
+    public Cliente agregarCliente(Cliente cliente) throws SQLException {
+        validarCliente(cliente);
+        return clienteDAO.crear(cliente);
     }
 
-    public void modificarCliente(Cliente cliente) throws SQLException {
+    public Cliente modificarCliente(Cliente cliente) throws SQLException {
+        validarCliente(cliente);
         clienteDAO.modificar(cliente);
+        return cliente;
     }
 
     public void eliminarClientePorDNI(String dni) throws SQLException {
+        if (dni == null || dni.isEmpty()) {
+            throw new IllegalArgumentException("El DNI es obligatorio para eliminar.");
+        }
         clienteDAO.eliminarPorDNI(dni);
     }
 
@@ -31,11 +37,31 @@ public class ClienteController {
     }
 
     public List<Cliente> buscarClientePorDNI(String dni) throws SQLException {
-        return clienteDAO.buscar(dni);  // Llamamos al método 'buscar' de ClienteDAO
+        if (dni == null || dni.isEmpty()) {
+            throw new IllegalArgumentException("El DNI es obligatorio para buscar.");
+        }
+        return clienteDAO.buscar(dni);
     }
 
-    public boolean verificarExistenciaPorDNI(String dni) throws SQLException {
-        return clienteDAO.buscarPorDNI(dni).size() > 0;
+    private void validarCliente(Cliente cliente) {
+        if (cliente.getDni() == null || cliente.getDni().isEmpty()) {
+            throw new IllegalArgumentException("El DNI es obligatorio.");
+        }
+        if (cliente.getNombre() == null || cliente.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+        if (cliente.getApellido() == null || cliente.getApellido().isEmpty()) {
+            throw new IllegalArgumentException("El apellido es obligatorio.");
+        }
     }
 
+    public boolean existeClientePorDNI(String dni) throws SQLException {
+        if (dni == null || dni.isEmpty()) {
+            throw new IllegalArgumentException("El DNI es obligatorio para verificar la existencia.");
+        }
+        return clienteDAO.validarExistenciaPorDNI(dni);
+    }
 }
+
+
+

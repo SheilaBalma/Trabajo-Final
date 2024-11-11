@@ -7,13 +7,11 @@ import java.sql.SQLException;
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/gym_management";
     private static final String USER = "root";
-    private static final String PASSWORD = "Sheila0403";
+    private static final String PASSWORD = "santyggz";
 
-//    private static Connection connection;
 
     // Método para establecer la conexión con la base de datos
     public static Connection getConnection() {
-//        if (connection == null) {
         Connection connection = null;
             try {
                 // Cargar el driver de MySQL
@@ -26,7 +24,6 @@ public class DatabaseConnection {
                 e.printStackTrace();
                 System.out.println("Error al conectar a la base de datos");
             }
-//        }
         return connection;
     }
 

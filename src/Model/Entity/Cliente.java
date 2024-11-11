@@ -9,11 +9,12 @@ public class Cliente {
     private String email;
     private String dni;
     private int edad;
-    private String tipoMembresia;
+    private Membresia.TipoMembresia tipoMembresia;
+    private Pago.MetodoPago metodoPago;
     private boolean estadoPago;
 
     // Constructor completo
-    public Cliente(int idCliente, String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, String tipoMembresia, boolean estadoPago) {
+    public Cliente(int idCliente, String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, Membresia.TipoMembresia tipoMembresia, Pago.MetodoPago metodoPago, boolean estadoPago) {
         this.idCliente = idCliente;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -23,11 +24,12 @@ public class Cliente {
         this.dni = dni;
         this.edad = edad;
         this.tipoMembresia = tipoMembresia;
+        this.metodoPago = metodoPago;
         this.estadoPago = estadoPago;
     }
 
     // Constructor sin ID
-    public Cliente(String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, String tipoMembresia, boolean estadoPago) {
+    public Cliente(String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, Membresia.TipoMembresia tipoMembresia, Pago.MetodoPago metodoPago, boolean estadoPago) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.direccion = direccion;
@@ -36,12 +38,11 @@ public class Cliente {
         this.dni = dni;
         this.edad = edad;
         this.tipoMembresia = tipoMembresia;
+        this.metodoPago = metodoPago;
         this.estadoPago = estadoPago;
     }
 
-    public Cliente() {
-
-    }
+    public Cliente() {}
 
     // Getters y Setters para cada campo
     public int getIdCliente() {
@@ -109,11 +110,19 @@ public class Cliente {
     }
 
     public String getTipoMembresia() {
-        return tipoMembresia;
+        return tipoMembresia.name(); // Devuelve el nombre del enum como String
     }
 
-    public void setTipoMembresia(String tipoMembresia) {
+    public void setTipoMembresia(Membresia.TipoMembresia tipoMembresia) {
         this.tipoMembresia = tipoMembresia;
+    }
+
+    public Pago.MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(Pago.MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
     }
 
     public boolean isEstadoPago() {
@@ -124,5 +133,3 @@ public class Cliente {
         this.estadoPago = estadoPago;
     }
 }
-
-

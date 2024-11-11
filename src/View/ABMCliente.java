@@ -2,6 +2,8 @@ package View;
 
 import Controller.ClienteController;
 import Model.Entity.Cliente;
+import Model.Entity.Membresia;
+import Model.Entity.Pago;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +21,8 @@ public class ABMCliente extends JPanel {
     private JTextField emailField;
     private JTextField dniField;
     private JTextField edadField;
-    private JTextField tipoMembresiaField;
+    private JComboBox<Membresia.TipoMembresia> tipoMembresiaComboBox;
+    private JComboBox<Pago.MetodoPago> metodoPagoComboBox;
     private JCheckBox estadoPagoCheck;
     private ClienteController clienteController;
 
@@ -70,24 +73,29 @@ public class ABMCliente extends JPanel {
 
         JLabel tipoMembresiaLabel = new JLabel("Tipo de Membresía:");
         tipoMembresiaLabel.setBounds(30, 350, 150, 25);
-        tipoMembresiaField = new JTextField();
-        tipoMembresiaField.setBounds(180, 350, 150, 25);
+        tipoMembresiaComboBox = new JComboBox<>(Membresia.TipoMembresia.values());
+        tipoMembresiaComboBox.setBounds(180, 350, 150, 25);
+
+        JLabel metodoPagoLabel = new JLabel("Método de Pago:");
+        metodoPagoLabel.setBounds(30, 390, 150, 25);
+        metodoPagoComboBox = new JComboBox<>(Pago.MetodoPago.values());
+        metodoPagoComboBox.setBounds(180, 390, 150, 25);
 
         JLabel estadoPagoLabel = new JLabel("Estado de Pago:");
-        estadoPagoLabel.setBounds(30, 390, 150, 25);
+        estadoPagoLabel.setBounds(30, 430, 150, 25);
         estadoPagoCheck = new JCheckBox();
-        estadoPagoCheck.setBounds(180, 390, 150, 25);
+        estadoPagoCheck.setBounds(180, 430, 150, 25);
 
         JButton addButton = new JButton("Agregar Cliente");
-        addButton.setBounds(30, 430, 150, 25);
+        addButton.setBounds(30, 470, 150, 25);
         JButton updateButton = new JButton("Actualizar Cliente");
-        updateButton.setBounds(190, 430, 150, 25);
+        updateButton.setBounds(190, 470, 150, 25);
         JButton deleteButton = new JButton("Eliminar Cliente");
-        deleteButton.setBounds(350, 430, 150, 25);
+        deleteButton.setBounds(350, 470, 150, 25);
         JButton listButton = new JButton("Listar Clientes");
-        listButton.setBounds(510, 430, 150, 25);
+        listButton.setBounds(510, 470, 150, 25);
         JButton searchButton = new JButton("Buscar Cliente");
-        searchButton.setBounds(670, 430, 150, 25);
+        searchButton.setBounds(670, 470, 150, 25);
 
         add(idClienteLabel);
         add(idClienteField);
@@ -106,7 +114,9 @@ public class ABMCliente extends JPanel {
         add(edadLabel);
         add(edadField);
         add(tipoMembresiaLabel);
-        add(tipoMembresiaField);
+        add(tipoMembresiaComboBox);
+        add(metodoPagoLabel);
+        add(metodoPagoComboBox);
         add(estadoPagoLabel);
         add(estadoPagoCheck);
         add(addButton);
@@ -126,7 +136,7 @@ public class ABMCliente extends JPanel {
                 }
 
                 try {
-                    if (clienteController.verificarExistenciaPorDNI(dni)) {
+                    if (clienteController.existeClientePorDNI(dni)) {
                         JOptionPane.showMessageDialog(null, "Ya existe un cliente con ese DNI.");
                         return;
                     }
@@ -139,7 +149,8 @@ public class ABMCliente extends JPanel {
                             emailField.getText(),
                             dni,
                             Integer.parseInt(edadField.getText()),
-                            tipoMembresiaField.getText(),
+                            (Membresia.TipoMembresia) tipoMembresiaComboBox.getSelectedItem(),
+                            (Pago.MetodoPago) metodoPagoComboBox.getSelectedItem(),
                             estadoPagoCheck.isSelected()
                     );
 
@@ -164,7 +175,8 @@ public class ABMCliente extends JPanel {
                         emailField.getText(),
                         dniField.getText(),
                         Integer.parseInt(edadField.getText()),
-                        tipoMembresiaField.getText(),
+                        (Membresia.TipoMembresia) tipoMembresiaComboBox.getSelectedItem(),
+                        (Pago.MetodoPago) metodoPagoComboBox.getSelectedItem(),
                         estadoPagoCheck.isSelected()
                 );
                 try {
@@ -207,13 +219,12 @@ public class ABMCliente extends JPanel {
             }
         });
 
-        searchButton.addActionListener(new ActionListener() {  // Acción para el botón de búsqueda
+        searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String dni = dniField.getText();
                 if (!dni.isEmpty()) {
                     try {
-                        // Usamos el controlador para buscar el cliente
                         List<Cliente> clientes = clienteController.buscarClientePorDNI(dni);
                         if (!clientes.isEmpty()) {
                             StringBuilder resultados = new StringBuilder("Resultados de la búsqueda:\n");
@@ -243,7 +254,9 @@ public class ABMCliente extends JPanel {
         emailField.setText("");
         dniField.setText("");
         edadField.setText("");
-        tipoMembresiaField.setText("");
+        tipoMembresiaComboBox.setSelectedIndex(0);
+        metodoPagoComboBox.setSelectedIndex(0);
         estadoPagoCheck.setSelected(false);
     }
 }
+

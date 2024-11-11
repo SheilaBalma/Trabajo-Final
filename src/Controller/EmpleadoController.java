@@ -2,45 +2,66 @@ package Controller;
 
 import Model.DAO.EmpleadoDAO;
 import Model.Entity.Empleado;
-import Model.Repository.EmpleadoRepository;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class EmpleadoController {
-    private EmpleadoRepository empleadoDAO;
+
+    private EmpleadoDAO empleadoDAO;
 
     public EmpleadoController() {
         empleadoDAO = new EmpleadoDAO();
     }
 
-    public String agregarEmpleado(Empleado empleado) throws SQLException {
-        if (!empleadoDAO.agregarEmpleado(empleado)) {
-            return "Error al agregar el empleado.";
+    public Empleado agregarEmpleado(Empleado empleado) throws SQLException {
+        validarEmpleado(empleado);
+        if (empleadoDAO.existeEmpleado(empleado.getNombre(), empleado.getApellido())) {
+            throw new IllegalArgumentException("Ya existe un empleado con este nombre y apellido.");
         }
-        return "Empleado agregado exitosamente.";
+        return empleadoDAO.agregarEmpleado(empleado);
     }
 
-    public String modificarEmpleado(Empleado empleado) throws SQLException {
-        if (!empleadoDAO.modificarEmpleado(empleado)) {
-            return "Error al modificar el empleado.";
-        }
-        return "Empleado modificado exitosamente.";
+    public Empleado modificarEmpleado(Empleado empleado) throws SQLException {
+        validarEmpleado(empleado);
+        return empleadoDAO.modificarEmpleado(empleado);  // Cambié a modificarEmpleado
     }
 
-    public List<Empleado> buscarEmpleados(String nombre, String apellido) throws SQLException {
-        return empleadoDAO.buscarEmpleados(nombre, apellido);
+    public void eliminarEmpleado(String nombre, String apellido) throws SQLException {
+        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty()) {
+            throw new IllegalArgumentException("Nombre y apellido son obligatorios para eliminar.");
+        }
+        empleadoDAO.eliminarEmpleado(nombre, apellido);  // Cambié a eliminarEmpleado
     }
 
     public List<Empleado> listarEmpleados() throws SQLException {
         return empleadoDAO.listarEmpleados();
     }
 
-    public String eliminarEmpleado(String nombre, String apellido) throws SQLException {
-        if (!empleadoDAO.eliminarEmpleado(nombre, apellido)) {
-            return "Error al eliminar el empleado.";
+    public List<Empleado> buscarEmpleado(String nombre, String apellido) throws SQLException {
+        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty()) {
+            throw new IllegalArgumentException("Nombre y apellido son obligatorios para buscar.");
         }
-        return "Empleado eliminado exitosamente.";
+        return empleadoDAO.buscarEmpleados(nombre, apellido);
+    }
+
+    private void validarEmpleado(Empleado empleado) {
+        if (empleado.getNombre() == null || empleado.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+        if (empleado.getApellido() == null || empleado.getApellido().isEmpty()) {
+            throw new IllegalArgumentException("El apellido es obligatorio.");
+        }
+        if (empleado.getDireccion() == null || empleado.getDireccion().isEmpty()) {
+            throw new IllegalArgumentException("La dirección es obligatoria.");
+        }
+        if (empleado.getTelefono() == null || empleado.getTelefono().isEmpty()) {
+            throw new IllegalArgumentException("El teléfono es obligatorio.");
+        }
+        if (empleado.getEmail() == null || empleado.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("El email es obligatorio.");
+        }
     }
 }
+
 
