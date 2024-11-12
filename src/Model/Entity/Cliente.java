@@ -1,26 +1,34 @@
 package Model.Entity;
-
-public class Cliente {
+/**
+ * Representa un cliente en el sistema, con información personal y datos
+ * específicos como su tipo de membresía, método de pago, y estado de pago.
+ */
+public class Cliente extends Persona {
     private int idCliente;
-    private String nombre;
-    private String apellido;
-    private String direccion;
-    private String telefono;
-    private String email;
     private String dni;
     private int edad;
     private Membresia.TipoMembresia tipoMembresia;
     private Pago.MetodoPago metodoPago;
     private boolean estadoPago;
 
-    // Constructor completo
+    /**
+     * Constructor completo para inicializar un cliente con todos sus atributos.
+     *
+     * @param idCliente       Identificador único del cliente.
+     * @param nombre          Nombre del cliente.
+     * @param apellido        Apellido del cliente.
+     * @param direccion       Dirección del cliente.
+     * @param telefono        Teléfono de contacto del cliente.
+     * @param email           Email del cliente.
+     * @param dni             DNI del cliente.
+     * @param edad            Edad del cliente.
+     * @param tipoMembresia   Tipo de membresía del cliente.
+     * @param metodoPago      Método de pago utilizado por el cliente.
+     * @param estadoPago      Estado del pago (activo/inactivo).
+     */
     public Cliente(int idCliente, String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, Membresia.TipoMembresia tipoMembresia, Pago.MetodoPago metodoPago, boolean estadoPago) {
+        super(nombre, apellido, direccion, telefono, email);  // Inicialización de Persona
         this.idCliente = idCliente;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.email = email;
         this.dni = dni;
         this.edad = edad;
         this.tipoMembresia = tipoMembresia;
@@ -28,69 +36,35 @@ public class Cliente {
         this.estadoPago = estadoPago;
     }
 
-    // Constructor sin ID
+    /**
+     * Constructor para inicializar un cliente sin ID (para clientes nuevos).
+     *
+     * @param nombre          Nombre del cliente.
+     * @param apellido        Apellido del cliente.
+     * @param direccion       Dirección del cliente.
+     * @param telefono        Teléfono de contacto del cliente.
+     * @param email           Email del cliente.
+     * @param dni             DNI del cliente.
+     * @param edad            Edad del cliente.
+     * @param tipoMembresia   Tipo de membresía del cliente.
+     * @param metodoPago      Método de pago utilizado por el cliente.
+     * @param estadoPago      Estado del pago (activo/inactivo).
+     */
     public Cliente(String nombre, String apellido, String direccion, String telefono, String email, String dni, int edad, Membresia.TipoMembresia tipoMembresia, Pago.MetodoPago metodoPago, boolean estadoPago) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.email = email;
+        super(nombre, apellido, direccion, telefono, email);  // Inicialización de Persona
         this.dni = dni;
         this.edad = edad;
         this.tipoMembresia = tipoMembresia;
         this.metodoPago = metodoPago;
         this.estadoPago = estadoPago;
     }
-
-    public Cliente() {}
-
-    // Getters y Setters para cada campo
+    // Getters y Setters para campos propios de Cliente
     public int getIdCliente() {
         return idCliente;
     }
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getDni() {
@@ -133,3 +107,4 @@ public class Cliente {
         this.estadoPago = estadoPago;
     }
 }
+

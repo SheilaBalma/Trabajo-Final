@@ -6,10 +6,18 @@ import Model.Repository.EmpleadoRepository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Data Access Object (DAO) para realizar operaciones de base de datos con empleados.
+ */
 public class EmpleadoDAO implements EmpleadoRepository {
 
-    // Agregar un nuevo empleado
+    /**
+     * Agrega un nuevo empleado a la base de datos.
+     *
+     * @param empleado El empleado a agregar.
+     * @return El empleado agregado con su ID asignado.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     @Override
     public Empleado agregarEmpleado(Empleado empleado) throws SQLException {
         String query = "INSERT INTO empleados (nombre, apellido, direccion, telefono, email, dni) VALUES (?, ?, ?, ?, ?, ?)";
@@ -39,7 +47,13 @@ public class EmpleadoDAO implements EmpleadoRepository {
         }
     }
 
-    // Modificar empleado basado en DNI (sin modificar idEmpleado)
+    /**
+     * Modifica los datos de un empleado en la base de datos.
+     *
+     * @param empleado El empleado con los datos actualizados.
+     * @return El empleado actualizado.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     @Override
     public Empleado modificarEmpleado(Empleado empleado) throws SQLException {
         String query = "UPDATE empleados SET nombre = ?, apellido = ?, direccion = ?, telefono = ?, email = ? WHERE dni = ?";
@@ -62,7 +76,13 @@ public class EmpleadoDAO implements EmpleadoRepository {
         }
     }
 
-    // Buscar empleado por DNI
+    /**
+     * Busca un empleado en la base de datos utilizando su DNI.
+     *
+     * @param dni El DNI del empleado a buscar.
+     * @return El empleado encontrado, o null si no se encuentra.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     @Override
     public Empleado buscarEmpleadoPorDni(String dni) throws SQLException {
         String query = "SELECT * FROM empleados WHERE dni = ?";
@@ -88,7 +108,12 @@ public class EmpleadoDAO implements EmpleadoRepository {
         }
     }
 
-    // Eliminar empleado por DNI
+    /**
+     * Elimina un empleado de la base de datos utilizando su DNI.
+     *
+     * @param dni El DNI del empleado a eliminar.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     @Override
     public void eliminarEmpleadoPorDni(String dni) throws SQLException {
         String query = "DELETE FROM empleados WHERE dni = ?";
@@ -104,7 +129,12 @@ public class EmpleadoDAO implements EmpleadoRepository {
         }
     }
 
-    // Listar todos los empleados
+    /**
+     * Lista todos los empleados almacenados en la base de datos.
+     *
+     * @return Una lista de empleados.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
     @Override
     public List<Empleado> listarEmpleados() throws SQLException {
         List<Empleado> empleados = new ArrayList<>();

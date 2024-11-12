@@ -10,7 +10,7 @@ public class DatabaseConnection {
     private static final String PASSWORD = "santyggz";
 
 
-    // Método para establecer la conexión con la base de datos
+    // METODO PARA ESTABLECER CONEXION
     public static Connection getConnection() {
         Connection connection = null;
             try {
