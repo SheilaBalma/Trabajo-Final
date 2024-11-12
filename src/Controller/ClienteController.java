@@ -14,17 +14,20 @@ public class ClienteController {
         clienteDAO = new ClienteDAO();
     }
 
+    // Método para agregar un cliente
     public Cliente agregarCliente(Cliente cliente) throws SQLException {
         validarCliente(cliente);
         return clienteDAO.crear(cliente);
     }
 
+    // Método para modificar un cliente
     public Cliente modificarCliente(Cliente cliente) throws SQLException {
         validarCliente(cliente);
         clienteDAO.modificar(cliente);
         return cliente;
     }
 
+    // Método para eliminar un cliente por DNI
     public void eliminarClientePorDNI(String dni) throws SQLException {
         if (dni == null || dni.isEmpty()) {
             throw new IllegalArgumentException("El DNI es obligatorio para eliminar.");
@@ -32,17 +35,22 @@ public class ClienteController {
         clienteDAO.eliminarPorDNI(dni);
     }
 
+    // Método para listar todos los clientes
     public List<Cliente> listarClientes() throws SQLException {
         return clienteDAO.list();
     }
 
-    public List<Cliente> buscarClientePorDNI(String dni) throws SQLException {
+
+    // Método para buscar un cliente por DNI (devuelve lista para casos múltiples)
+    public List<Cliente> obtenerClientePorDNI(String dni) throws SQLException {
         if (dni == null || dni.isEmpty()) {
             throw new IllegalArgumentException("El DNI es obligatorio para buscar.");
         }
-        return clienteDAO.buscar(dni);
+        return clienteDAO.buscar(dni); // Suponiendo que `buscar` devuelve una lista de clientes
     }
 
+
+    // Validación de los datos del cliente
     private void validarCliente(Cliente cliente) {
         if (cliente.getDni() == null || cliente.getDni().isEmpty()) {
             throw new IllegalArgumentException("El DNI es obligatorio.");
@@ -55,6 +63,7 @@ public class ClienteController {
         }
     }
 
+    // Método para verificar si existe un cliente por DNI
     public boolean existeClientePorDNI(String dni) throws SQLException {
         if (dni == null || dni.isEmpty()) {
             throw new IllegalArgumentException("El DNI es obligatorio para verificar la existencia.");
@@ -62,6 +71,7 @@ public class ClienteController {
         return clienteDAO.validarExistenciaPorDNI(dni);
     }
 }
+
 
 
 

@@ -109,8 +109,8 @@ public class Cliente {
         this.edad = edad;
     }
 
-    public String getTipoMembresia() {
-        return tipoMembresia.name(); // Devuelve el nombre del enum como String
+    public Membresia.TipoMembresia getTipoMembresia() {
+        return tipoMembresia;
     }
 
     public void setTipoMembresia(Membresia.TipoMembresia tipoMembresia) {

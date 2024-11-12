@@ -16,6 +16,7 @@ public class ABMEmpleado extends JPanel {
     private JTextField direccionField;
     private JTextField telefonoField;
     private JTextField emailField;
+    private JTextField dniField;  // Nuevo campo para el DNI
     private JTextArea resultadoArea;
     private EmpleadoController empleadoController;
 
@@ -49,21 +50,26 @@ public class ABMEmpleado extends JPanel {
         emailField = new JTextField();
         emailField.setBounds(180, 190, 150, 25);
 
+        JLabel dniLabel = new JLabel("DNI:"); // Etiqueta para DNI
+        dniLabel.setBounds(30, 230, 150, 25);
+        dniField = new JTextField();
+        dniField.setBounds(180, 230, 150, 25);
+
         // Botones para acciones
         JButton addButton = new JButton("Agregar Empleado");
-        addButton.setBounds(30, 230, 150, 25);
+        addButton.setBounds(30, 270, 150, 25);
         JButton updateButton = new JButton("Actualizar Empleado");
-        updateButton.setBounds(190, 230, 150, 25);
+        updateButton.setBounds(190, 270, 150, 25);
         JButton deleteButton = new JButton("Eliminar Empleado");
-        deleteButton.setBounds(350, 230, 150, 25);
+        deleteButton.setBounds(350, 270, 150, 25);
         JButton listButton = new JButton("Listar Empleados");
-        listButton.setBounds(510, 230, 150, 25);
+        listButton.setBounds(510, 270, 150, 25);
         JButton searchButton = new JButton("Buscar Empleado");
-        searchButton.setBounds(670, 230, 150, 25);
+        searchButton.setBounds(670, 270, 150, 25);
 
         // Área de texto para mostrar resultados
         resultadoArea = new JTextArea();
-        resultadoArea.setBounds(30, 270, 790, 150);
+        resultadoArea.setBounds(30, 310, 790, 150);
         resultadoArea.setEditable(false);
 
         // Añadir componentes al panel
@@ -77,6 +83,8 @@ public class ABMEmpleado extends JPanel {
         add(telefonoField);
         add(emailLabel);
         add(emailField);
+        add(dniLabel);
+        add(dniField);
         add(addButton);
         add(updateButton);
         add(deleteButton);
@@ -90,7 +98,7 @@ public class ABMEmpleado extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty() ||
                         direccionField.getText().isEmpty() || telefonoField.getText().isEmpty() ||
-                        emailField.getText().isEmpty()) {
+                        emailField.getText().isEmpty() || dniField.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
                     return;
                 }
@@ -100,9 +108,11 @@ public class ABMEmpleado extends JPanel {
                 String direccion = direccionField.getText();
                 String telefono = telefonoField.getText();
                 String email = emailField.getText();
+                String dni = dniField.getText();
 
                 try {
-                    empleadoController.agregarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                    Empleado nuevoEmpleado = new Empleado(nombre, apellido, direccion, telefono, email, dni);
+                    empleadoController.agregarEmpleado(nuevoEmpleado);
                     JOptionPane.showMessageDialog(null, "Empleado agregado con éxito.");
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar el empleado: " + ex.getMessage());
@@ -117,8 +127,8 @@ public class ABMEmpleado extends JPanel {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nombre y Apellido son obligatorios para actualizar.");
+                if (dniField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El DNI es obligatorio para actualizar.");
                     return;
                 }
 
@@ -127,9 +137,11 @@ public class ABMEmpleado extends JPanel {
                 String direccion = direccionField.getText();
                 String telefono = telefonoField.getText();
                 String email = emailField.getText();
+                String dni = dniField.getText();
 
                 try {
-                    empleadoController.modificarEmpleado(new Empleado(nombre, apellido, direccion, telefono, email));
+                    Empleado empleadoActualizado = new Empleado(nombre, apellido, direccion, telefono, email, dni);
+                    empleadoController.modificarEmpleado(empleadoActualizado);
                     JOptionPane.showMessageDialog(null, "Empleado actualizado con éxito.");
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Error al modificar el empleado: " + ex.getMessage());
@@ -144,16 +156,15 @@ public class ABMEmpleado extends JPanel {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nombreField.getText().isEmpty() || apellidoField.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nombre y Apellido son obligatorios para eliminar.");
+                if (dniField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "El DNI es obligatorio para eliminar.");
                     return;
                 }
 
-                String nombre = nombreField.getText();
-                String apellido = apellidoField.getText();
+                String dni = dniField.getText();
 
                 try {
-                    empleadoController.eliminarEmpleado(nombre, apellido);
+                    empleadoController.eliminarEmpleadoPorDni(dni);
                     JOptionPane.showMessageDialog(null, "Empleado eliminado con éxito.");
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Error al eliminar el empleado: " + ex.getMessage());
@@ -170,10 +181,9 @@ public class ABMEmpleado extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     List<Empleado> empleados = empleadoController.listarEmpleados();
-                    if (empleados.isEmpty()) {
-                        resultadoArea.setText("No se encontraron empleados.");
-                    } else {
-                        mostrarResultados(empleados);
+                    resultadoArea.setText(""); // Limpiar el área de resultados
+                    for (Empleado emp : empleados) {
+                        resultadoArea.append(emp.toString() + "\n");
                     }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Error al listar empleados: " + ex.getMessage());
@@ -181,21 +191,33 @@ public class ABMEmpleado extends JPanel {
             }
         });
 
-        // Acción para buscar empleado
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nombre = nombreField.getText();
-                String apellido = apellidoField.getText();
+                String dni = dniField.getText();
+                if (dni.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Debe ingresar un DNI para buscar.");
+                    return;
+                }
+
                 try {
-                    List<Empleado> empleados = empleadoController.buscarEmpleado(nombre, apellido);
-                    if (empleados.isEmpty()) {
-                        resultadoArea.setText("No se encontró ningún empleado con ese nombre y apellido.");
+                    Empleado empleado = empleadoController.buscarEmpleadoPorDni(dni);
+                    if (empleado != null) {
+                        // Rellenar los campos con los datos del empleado encontrado
+                        nombreField.setText(empleado.getNombre());
+                        apellidoField.setText(empleado.getApellido());
+                        direccionField.setText(empleado.getDireccion());
+                        telefonoField.setText(empleado.getTelefono());
+                        emailField.setText(empleado.getEmail());
+                        dniField.setText(empleado.getDni());  // Asegúrate de que el DNI también se muestra
+
+                        // Mostrar los detalles del empleado en el área de resultados
+                        resultadoArea.setText("Empleado encontrado:\n" + empleado.toString());
                     } else {
-                        mostrarResultados(empleados);
+                        JOptionPane.showMessageDialog(null, "No se encontró un empleado con ese DNI.");
                     }
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al buscar empleado: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error al buscar el empleado: " + ex.getMessage());
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
@@ -209,20 +231,8 @@ public class ABMEmpleado extends JPanel {
         direccionField.setText("");
         telefonoField.setText("");
         emailField.setText("");
-    }
-
-    // Método para mostrar los resultados en resultadoArea
-    private void mostrarResultados(List<Empleado> empleados) {
-        StringBuilder resultados = new StringBuilder();
-        for (Empleado empleado : empleados) {
-            resultados.append("Nombre: ").append(empleado.getNombre())
-                    .append(", Apellido: ").append(empleado.getApellido())
-                    .append(", Dirección: ").append(empleado.getDireccion())
-                    .append(", Teléfono: ").append(empleado.getTelefono())
-                    .append(", Email: ").append(empleado.getEmail())
-                    .append("\n");
-        }
-        resultadoArea.setText(resultados.toString());
+        dniField.setText(""); // Limpiar el campo DNI también
     }
 }
+
 

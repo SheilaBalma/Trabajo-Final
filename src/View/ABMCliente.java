@@ -125,125 +125,148 @@ public class ABMCliente extends JPanel {
         add(listButton);
         add(searchButton);
 
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String dni = dniField.getText();
-
-                if (dni.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Por favor ingresa un DNI.");
-                    return;
-                }
-
-                try {
-                    if (clienteController.existeClientePorDNI(dni)) {
-                        JOptionPane.showMessageDialog(null, "Ya existe un cliente con ese DNI.");
-                        return;
-                    }
-
-                    Cliente cliente = new Cliente(
-                            nombreField.getText(),
-                            apellidoField.getText(),
-                            direccionField.getText(),
-                            telefonoField.getText(),
-                            emailField.getText(),
-                            dni,
-                            Integer.parseInt(edadField.getText()),
-                            (Membresia.TipoMembresia) tipoMembresiaComboBox.getSelectedItem(),
-                            (Pago.MetodoPago) metodoPagoComboBox.getSelectedItem(),
-                            estadoPagoCheck.isSelected()
-                    );
-
-                    clienteController.agregarCliente(cliente);
-                    JOptionPane.showMessageDialog(null, "Cliente agregado correctamente.");
-                    limpiarCampos();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al agregar el cliente: " + ex.getMessage());
-                }
-            }
-        });
-
-        updateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Cliente cliente = new Cliente(
-                        Integer.parseInt(idClienteField.getText()),
-                        nombreField.getText(),
-                        apellidoField.getText(),
-                        direccionField.getText(),
-                        telefonoField.getText(),
-                        emailField.getText(),
-                        dniField.getText(),
-                        Integer.parseInt(edadField.getText()),
-                        (Membresia.TipoMembresia) tipoMembresiaComboBox.getSelectedItem(),
-                        (Pago.MetodoPago) metodoPagoComboBox.getSelectedItem(),
-                        estadoPagoCheck.isSelected()
-                );
-                try {
-                    clienteController.modificarCliente(cliente);
-                    JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al actualizar el cliente: " + ex.getMessage());
-                }
-                limpiarCampos();
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    clienteController.eliminarClientePorDNI(dniField.getText());
-                    JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente.");
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar el cliente: " + ex.getMessage());
-                }
-                limpiarCampos();
-            }
-        });
-
-        listButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<Cliente> clientes;
-                try {
-                    clientes = clienteController.listarClientes();
-                    StringBuilder listado = new StringBuilder("Lista de Clientes:\n");
-                    for (Cliente cliente : clientes) {
-                        listado.append(cliente.getNombre()).append(" ").append(cliente.getApellido()).append("\n");
-                    }
-                    JOptionPane.showMessageDialog(null, listado.toString());
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error al listar los clientes: " + ex.getMessage());
-                }
-            }
-        });
-
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String dni = dniField.getText();
-                if (!dni.isEmpty()) {
-                    try {
-                        List<Cliente> clientes = clienteController.buscarClientePorDNI(dni);
-                        if (!clientes.isEmpty()) {
-                            StringBuilder resultados = new StringBuilder("Resultados de la búsqueda:\n");
-                            for (Cliente cliente : clientes) {
-                                resultados.append(cliente.getNombre()).append(" ").append(cliente.getApellido()).append("\n");
-                            }
-                            JOptionPane.showMessageDialog(null, resultados.toString());
-                        } else {
-                            JOptionPane.showMessageDialog(null, "No se encontraron clientes con ese DNI.");
-                        }
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(null, "Error al buscar el cliente: " + ex.getMessage());
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Por favor ingresa un DNI para buscar.");
-                }
-            }
-        });
+        addButton.addActionListener(e -> agregarCliente());
+        updateButton.addActionListener(e -> actualizarCliente());
+        deleteButton.addActionListener(e -> eliminarCliente());
+        listButton.addActionListener(e -> listarClientes());
+        searchButton.addActionListener(e -> buscarCliente());
     }
+
+    private void agregarCliente() {
+        String dni = dniField.getText().trim();
+
+        if (dni.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingresa un DNI.");
+            return;
+        }
+
+        try {
+            if (clienteController.existeClientePorDNI(dni)) {
+                JOptionPane.showMessageDialog(this, "Ya existe un cliente con ese DNI.");
+                return;
+            }
+
+            Cliente cliente = new Cliente(
+                    nombreField.getText().trim(),
+                    apellidoField.getText().trim(),
+                    direccionField.getText().trim(),
+                    telefonoField.getText().trim(),
+                    emailField.getText().trim(),
+                    dni,
+                    Integer.parseInt(edadField.getText().trim()), // Validar este campo
+                    (Membresia.TipoMembresia) tipoMembresiaComboBox.getSelectedItem(),
+                    (Pago.MetodoPago) metodoPagoComboBox.getSelectedItem(),
+                    estadoPagoCheck.isSelected()
+            );
+
+            clienteController.agregarCliente(cliente);
+            JOptionPane.showMessageDialog(this, "Cliente agregado correctamente.");
+            limpiarCampos();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Edad debe ser un número válido.");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al agregar el cliente: " + ex.getMessage());
+        }
+    }
+
+    private void listarClientes() {
+        try {
+            List<Cliente> clientes = clienteController.listarClientes();
+            StringBuilder listado = new StringBuilder("Lista de Clientes:\n");
+            for (Cliente cliente : clientes) {
+                listado.append("ID: ").append(cliente.getIdCliente()).append(", ")
+                        .append("Nombre: ").append(cliente.getNombre()).append(" ")
+                        .append(cliente.getApellido()).append("\n");
+            }
+            JOptionPane.showMessageDialog(this, listado.toString());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al listar los clientes: " + ex.getMessage());
+        }
+    }
+    private void eliminarCliente() {
+        String dni = dniField.getText();
+        if (dni.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor ingresa el DNI del cliente a eliminar.");
+            return;
+        }
+
+        try {
+            clienteController.eliminarClientePorDNI(dni);  // Usa el nombre correcto del método en ClienteController
+            JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente.");
+            limpiarCampos();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error al eliminar el cliente: " + ex.getMessage());
+        }
+    }
+
+
+    private void buscarCliente() {
+        String dni = dniField.getText().trim();
+        if (dni.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa el DNI del cliente a buscar.");
+            return;
+        }
+
+        try {
+            List<Cliente> clientes = clienteController.obtenerClientePorDNI(dni); // Devuelve una lista (normalmente 1 o 0 resultados)
+            if (!clientes.isEmpty()) {
+                Cliente cliente = clientes.get(0); // Tomar el primer resultado
+                // Llenar los campos con los datos del cliente
+                idClienteField.setText(String.valueOf(cliente.getIdCliente()));
+                nombreField.setText(cliente.getNombre());
+                apellidoField.setText(cliente.getApellido());
+                direccionField.setText(cliente.getDireccion());
+                telefonoField.setText(cliente.getTelefono());
+                emailField.setText(cliente.getEmail());
+                dniField.setText(cliente.getDni());
+                edadField.setText(String.valueOf(cliente.getEdad()));
+                tipoMembresiaComboBox.setSelectedItem(cliente.getTipoMembresia());
+                metodoPagoComboBox.setSelectedItem(cliente.getMetodoPago());
+                estadoPagoCheck.setSelected(cliente.isEstadoPago());
+
+                JOptionPane.showMessageDialog(this, "Cliente encontrado. Puedes actualizar los datos.");
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró ningún cliente con el DNI ingresado.");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al buscar el cliente: " + ex.getMessage());
+        }
+    }
+
+    private void actualizarCliente() {
+        String dni = dniField.getText().trim();
+
+        if (dni.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, busca un cliente por DNI antes de actualizar.");
+            return;
+        }
+
+        try {
+            // Crear un cliente con los datos modificados
+            Cliente cliente = new Cliente(
+                    Integer.parseInt(idClienteField.getText().trim()), // ID
+                    nombreField.getText().trim(),
+                    apellidoField.getText().trim(),
+                    direccionField.getText().trim(),
+                    telefonoField.getText().trim(),
+                    emailField.getText().trim(),
+                    dni,
+                    Integer.parseInt(edadField.getText().trim()),
+                    (Membresia.TipoMembresia) tipoMembresiaComboBox.getSelectedItem(),
+                    (Pago.MetodoPago) metodoPagoComboBox.getSelectedItem(),
+                    estadoPagoCheck.isSelected()
+            );
+
+            clienteController.modificarCliente(cliente); // Actualizar en la base de datos
+            JOptionPane.showMessageDialog(this, "Cliente actualizado correctamente.");
+            limpiarCampos(); // Limpiar el formulario
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Error en el formato de los datos: " + ex.getMessage());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar el cliente: " + ex.getMessage());
+        }
+    }
+
 
     private void limpiarCampos() {
         idClienteField.setText("");
@@ -259,4 +282,5 @@ public class ABMCliente extends JPanel {
         estadoPagoCheck.setSelected(false);
     }
 }
+
 

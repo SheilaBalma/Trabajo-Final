@@ -16,52 +16,45 @@ public class EmpleadoController {
 
     public Empleado agregarEmpleado(Empleado empleado) throws SQLException {
         validarEmpleado(empleado);
-        if (empleadoDAO.existeEmpleado(empleado.getNombre(), empleado.getApellido())) {
-            throw new IllegalArgumentException("Ya existe un empleado con este nombre y apellido.");
+        if (empleadoDAO.buscarEmpleadoPorDni(empleado.getDni()) != null) {
+            throw new IllegalArgumentException("Ya existe un empleado con este DNI.");
         }
         return empleadoDAO.agregarEmpleado(empleado);
     }
 
     public Empleado modificarEmpleado(Empleado empleado) throws SQLException {
         validarEmpleado(empleado);
-        return empleadoDAO.modificarEmpleado(empleado);  // Cambié a modificarEmpleado
+        return empleadoDAO.modificarEmpleado(empleado);
     }
 
-    public void eliminarEmpleado(String nombre, String apellido) throws SQLException {
-        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty()) {
-            throw new IllegalArgumentException("Nombre y apellido son obligatorios para eliminar.");
+    public void eliminarEmpleadoPorDni(String dni) throws SQLException {
+        if (dni.isEmpty()) {
+            throw new IllegalArgumentException("El DNI no puede estar vacío.");
         }
-        empleadoDAO.eliminarEmpleado(nombre, apellido);  // Cambié a eliminarEmpleado
+        empleadoDAO.eliminarEmpleadoPorDni(dni);
+    }
+
+    public Empleado buscarEmpleadoPorDni(String dni) throws SQLException {
+        if (dni.isEmpty()) {
+            throw new IllegalArgumentException("El DNI no puede estar vacío.");
+        }
+        return empleadoDAO.buscarEmpleadoPorDni(dni);
     }
 
     public List<Empleado> listarEmpleados() throws SQLException {
         return empleadoDAO.listarEmpleados();
     }
 
-    public List<Empleado> buscarEmpleado(String nombre, String apellido) throws SQLException {
-        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty()) {
-            throw new IllegalArgumentException("Nombre y apellido son obligatorios para buscar.");
-        }
-        return empleadoDAO.buscarEmpleados(nombre, apellido);
-    }
-
     private void validarEmpleado(Empleado empleado) {
-        if (empleado.getNombre() == null || empleado.getNombre().isEmpty()) {
-            throw new IllegalArgumentException("El nombre es obligatorio.");
-        }
-        if (empleado.getApellido() == null || empleado.getApellido().isEmpty()) {
-            throw new IllegalArgumentException("El apellido es obligatorio.");
-        }
-        if (empleado.getDireccion() == null || empleado.getDireccion().isEmpty()) {
-            throw new IllegalArgumentException("La dirección es obligatoria.");
-        }
-        if (empleado.getTelefono() == null || empleado.getTelefono().isEmpty()) {
-            throw new IllegalArgumentException("El teléfono es obligatorio.");
-        }
-        if (empleado.getEmail() == null || empleado.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("El email es obligatorio.");
+        if (empleado.getNombre().isEmpty() || empleado.getApellido().isEmpty() ||
+                empleado.getDireccion().isEmpty() || empleado.getTelefono().isEmpty() ||
+                empleado.getEmail().isEmpty() || empleado.getDni().isEmpty()) {
+            throw new IllegalArgumentException("Todos los campos son obligatorios.");
         }
     }
 }
+
+
+
 
 
