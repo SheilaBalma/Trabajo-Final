@@ -1,27 +1,24 @@
 package Model.Entity;
 
 public class Actividad {
-    private String nombre;
-
-    public Actividad(String nombre) {
-        this.nombre = nombre;
+    public enum TipoActividad {
+        YOGA, CROSSFIT, ZUMBA, SPINNING
     }
 
-    public String getNombre() {
-        return nombre;
+    private TipoActividad tipo;
+
+    public Actividad(TipoActividad tipo) {
+        this.tipo = tipo;
+    }
+
+    public TipoActividad getTipo() {
+        return tipo;
     }
 
     @Override
     public String toString() {
-        return nombre;
-    }
-
-    // Definir las actividades posibles, por ejemplo:
-    public static Actividad[] values() {
-        return new Actividad[]{
-                new Actividad("Yoga"),
-                new Actividad("Spinning"),
-                new Actividad("CrossFit")
-        };
+        return "Actividad{" +
+                "tipo=" + tipo +
+                '}';
     }
 }

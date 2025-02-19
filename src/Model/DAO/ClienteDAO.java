@@ -28,7 +28,7 @@ public class ClienteDAO implements ClienteRepository {
 
     @Override
     public Cliente crear(Cliente cliente) throws SQLException {
-        String sql = "INSERT INTO clientes (nombre, apellido, direccion, telefono, email, dni, edad, tipoMembresia, estadoPago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO clientes (nombre, apellido, direccion, telefono, email, dni, edad, tipoMembresia, estadoPago, actividad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -41,6 +41,7 @@ public class ClienteDAO implements ClienteRepository {
             preparedStatement.setInt(7, cliente.getEdad());
             preparedStatement.setString(8, cliente.getTipoMembresia());
             preparedStatement.setBoolean(9, cliente.isEstadoPago());
+            preparedStatement.setString(10, cliente.getActividad());
 
             preparedStatement.executeUpdate();
 
@@ -55,7 +56,7 @@ public class ClienteDAO implements ClienteRepository {
 
     @Override
     public void modificar(Cliente cliente) throws SQLException {
-        String sql = "UPDATE clientes SET nombre=?, apellido=?, direccion=?, telefono=?, email=?, dni=?, edad=?, tipoMembresia=?, estadoPago=? WHERE idCliente=?";
+        String sql = "UPDATE clientes SET nombre=?, apellido=?, direccion=?, telefono=?, email=?, dni=?, edad=?, tipoMembresia=?, estadoPago=?, actividad=? WHERE idCliente=?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
@@ -68,22 +69,9 @@ public class ClienteDAO implements ClienteRepository {
             preparedStatement.setInt(7, cliente.getEdad());
             preparedStatement.setString(8, cliente.getTipoMembresia());
             preparedStatement.setBoolean(9, cliente.isEstadoPago());
-            preparedStatement.setInt(10, cliente.getIdCliente());
+            preparedStatement.setString(10, cliente.getActividad());
+            preparedStatement.setInt(11, cliente.getIdCliente());
             preparedStatement.executeUpdate();
-        }
-    }
-
-    @Override
-    public void eliminar(int idCliente) throws SQLException {
-        String sql = "DELETE FROM clientes WHERE idCliente = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, idCliente);
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new SQLException("No se encontró el cliente con id: " + idCliente);
-            }
         }
     }
 
@@ -122,6 +110,7 @@ public class ClienteDAO implements ClienteRepository {
                 cliente.setEdad(resultSet.getInt("edad"));
                 cliente.setTipoMembresia(resultSet.getString("tipoMembresia"));
                 cliente.setEstadoPago(resultSet.getBoolean("estadoPago"));
+                cliente.setActividad(resultSet.getString("actividad"));
                 clientes.add(cliente);
             }
         }
@@ -148,6 +137,7 @@ public class ClienteDAO implements ClienteRepository {
                 cliente.setEdad(resultSet.getInt("edad"));
                 cliente.setTipoMembresia(resultSet.getString("tipoMembresia"));
                 cliente.setEstadoPago(resultSet.getBoolean("estadoPago"));
+                cliente.setActividad(resultSet.getString("actividad"));
 
                 clientes.add(cliente);
             }

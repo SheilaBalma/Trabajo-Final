@@ -1,6 +1,7 @@
 package View;
 
 import Controller.ClienteController;
+import Model.Entity.Actividad;
 import Model.Entity.Cliente;
 import Model.Entity.Membresia;
 import Model.Entity.Membresia.TipoMembresia;
@@ -21,6 +22,7 @@ public class ABMCliente extends JPanel {
     private DefaultTableModel modeloTabla;
     private ClienteController clienteController;
     private JComboBox<TipoMembresia> tipoMembresiaComboBox;
+    private JComboBox<Actividad.TipoActividad> tipoActividadComboBox;
     private JTextArea descripcionTextArea;
 
     public ABMCliente() {
@@ -81,17 +83,23 @@ public class ABMCliente extends JPanel {
         // JTextArea para mostrar la descripción de la membresía
         JLabel descripcionLabel = new JLabel("Descripción:");
         descripcionLabel.setBounds(30, 390, 150, 25);
-
         descripcionTextArea = new JTextArea();
         descripcionTextArea.setBounds(180, 390, 200, 50);
         descripcionTextArea.setEditable(false);
         descripcionTextArea.setLineWrap(true);
         descripcionTextArea.setWrapStyleWord(true);
 
+        // ** ComboBox para seleccionar tipo de actividad **
+        JLabel tipoActividadLabel = new JLabel("Tipo de Actividad:");
+        tipoActividadLabel.setBounds(30, 500, 150, 25);
+        tipoActividadComboBox = new JComboBox<>(Actividad.TipoActividad.values());
+        tipoActividadComboBox.setBounds(180, 500, 150, 25);
+
         JLabel estadoPagoLabel = new JLabel("Estado de Pago:");
         estadoPagoLabel.setBounds(30, 460, 150, 25);
         estadoPagoCheck = new JCheckBox();
         estadoPagoCheck.setBounds(180, 460, 150, 25);
+
 
         // Botones
         JButton agregarButton = new JButton("Agregar");
@@ -109,6 +117,10 @@ public class ABMCliente extends JPanel {
         JButton listarButton = new JButton("Listar");
         listarButton.setBounds(400, 390, 150, 40);
 
+        // Botón Limpiar
+        JButton limpiarButton = new JButton("Limpiar");
+        limpiarButton.setBounds(600, 225, 150, 40);
+
         // Agregar tabla para listar clientes
         modeloTabla = new DefaultTableModel();
         modeloTabla.addColumn("ID");
@@ -121,10 +133,11 @@ public class ABMCliente extends JPanel {
         modeloTabla.addColumn("Edad");
         modeloTabla.addColumn("Membresia");
         modeloTabla.addColumn("Pago");
+        modeloTabla.addColumn("Actividad");
 
         tablaClientes = new JTable(modeloTabla);
         JScrollPane scrollPane = new JScrollPane(tablaClientes);
-        scrollPane.setBounds(30, 500, 700, 100);
+        scrollPane.setBounds(30, 560, 700, 150);
 
         // Agregar componentes al panel
         add(idClienteLabel);
@@ -149,12 +162,15 @@ public class ABMCliente extends JPanel {
         add(descripcionTextArea);
         add(estadoPagoLabel);
         add(estadoPagoCheck);
+        add(tipoActividadLabel);
+        add(tipoActividadComboBox);
         add(agregarButton);
         add(buscarButton);
         add(modificarButton);
         add(eliminarButton);
         add(listarButton);
         add(scrollPane);
+        add(limpiarButton);
 
         // Acción para mostrar la descripción cuando cambie la selección en el JComboBox
         tipoMembresiaComboBox.addActionListener(new ActionListener() {
@@ -177,29 +193,69 @@ public class ABMCliente extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    // Validar que todos los campos estén completos
+                    if (nombreField.getText().trim().isEmpty() || apellidoField.getText().trim().isEmpty() ||
+                            direccionField.getText().trim().isEmpty() || telefonoField.getText().trim().isEmpty() ||
+                            dniField.getText().trim().isEmpty() || edadField.getText().trim().isEmpty() ||
+                            emailField.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Error: Todos los campos deben estar completos.");
+                        return;
+                    }
+
+                    // Validar Teléfono (solo números)
+                    String telefono = telefonoField.getText().trim();
+                    if (!telefono.matches("\\d+")) {  // Solo números
+                        JOptionPane.showMessageDialog(null, "El teléfono debe contener solo números.");
+                        return;
+                    }
+
+                    // Validar DNI (solo números)
+                    String dni = dniField.getText().trim();
+                    if (!dni.matches("\\d+")) {  // Solo números
+                        JOptionPane.showMessageDialog(null, "El DNI debe contener solo números.");
+                        return;
+                    }
+
+                    // Validar Edad (número entero positivo)
+                    String edadText = edadField.getText().trim();
+                    int edad;
+                    try {
+                        edad = Integer.parseInt(edadText);
+                        if (edad <= 0) {
+                            JOptionPane.showMessageDialog(null, "La edad debe ser un número positivo.");
+                            return;
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "La edad debe ser un número válido.");
+                        return;
+                    }
+
                     Cliente cliente = new Cliente();
                     cliente.setNombre(nombreField.getText());
                     cliente.setApellido(apellidoField.getText());
-                    cliente.setDni(dniField.getText());
+                    cliente.setDni(dni);
                     cliente.setDireccion(direccionField.getText());
-                    cliente.setTelefono(telefonoField.getText());
+                    cliente.setTelefono(telefono);
                     cliente.setEmail(emailField.getText());
-                    cliente.setEdad(Integer.parseInt(edadField.getText()));
+                    cliente.setEdad(edad);
                     cliente.setEstadoPago(estadoPagoCheck.isSelected());
 
                     // Obtener tipo de membresía seleccionado
                     TipoMembresia tipoMembresiaSeleccionado = (TipoMembresia) tipoMembresiaComboBox.getSelectedItem();
                     cliente.setTipoMembresia(tipoMembresiaSeleccionado.toString()); // Asignar tipo de membresía al cliente
 
+                    Actividad.TipoActividad tipoActividadSeleccionada = (Actividad.TipoActividad) tipoActividadComboBox.getSelectedItem();
+                    cliente.setActividad(tipoActividadSeleccionada.toString()); // Asigna el tipo de actividad al cliente
+
                     String resultado = clienteController.agregarCliente(cliente);
                     JOptionPane.showMessageDialog(null, resultado);
                     limpiarCampos();
-
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar cliente: " + ex.getMessage());
                 }
             }
         });
+
 
         // Acción del botón buscar
         buscarButton.addActionListener(new ActionListener() {
@@ -231,6 +287,9 @@ public class ABMCliente extends JPanel {
                     // Establecer el tipo de membresía
                     TipoMembresia tipoSeleccionado = TipoMembresia.valueOf(cliente.getTipoMembresia()); // Usamos el valor del string y lo convertimos al enum
                     tipoMembresiaComboBox.setSelectedItem(tipoSeleccionado);  // Establecemos el tipo de membresía en el ComboBox
+
+                    Actividad.TipoActividad tpoSeleccionado = Actividad.TipoActividad.valueOf(cliente.getActividad()); // Usamos el valor del string y lo convertimos al enum
+                    tipoActividadComboBox.setSelectedItem(tpoSeleccionado); // Establecemos el tipo de actividad en el ComboBox
                 }
             }
         });
@@ -241,9 +300,46 @@ public class ABMCliente extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    // Validar que todos los campos estén completos
+                    if (nombreField.getText().trim().isEmpty() || apellidoField.getText().trim().isEmpty() ||
+                            direccionField.getText().trim().isEmpty() || telefonoField.getText().trim().isEmpty() ||
+                            dniField.getText().trim().isEmpty() || edadField.getText().trim().isEmpty() ||
+                            emailField.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Error: Todos los campos deben estar completos.");
+                        return;
+                    }
+
                     // Verificar que el ID de cliente no sea nulo o vacío
                     if (idClienteField.getText().trim().isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Error: Debe seleccionar un cliente antes de modificar.");
+                        return;
+                    }
+
+                    // Validar Teléfono (solo números)
+                    String telefono = telefonoField.getText().trim();
+                    if (!telefono.matches("\\d+")) {  // Solo números
+                        JOptionPane.showMessageDialog(null, "El teléfono debe contener solo números.");
+                        return;
+                    }
+
+                    // Validar DNI (solo números)
+                    String dni = dniField.getText().trim();
+                    if (!dni.matches("\\d+")) {  // Solo números
+                        JOptionPane.showMessageDialog(null, "El DNI debe contener solo números.");
+                        return;
+                    }
+
+                    // Validar Edad (número entero positivo)
+                    String edadText = edadField.getText().trim();
+                    int edad;
+                    try {
+                        edad = Integer.parseInt(edadText);
+                        if (edad <= 0) {
+                            JOptionPane.showMessageDialog(null, "La edad debe ser un número positivo.");
+                            return;
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "La edad debe ser un número válido.");
                         return;
                     }
 
@@ -252,12 +348,14 @@ public class ABMCliente extends JPanel {
                     cliente.setNombre(nombreField.getText().trim());
                     cliente.setApellido(apellidoField.getText().trim());
                     cliente.setDireccion(direccionField.getText().trim());
-                    cliente.setTelefono(telefonoField.getText().trim());
+                    cliente.setTelefono(telefono);
                     cliente.setEmail(emailField.getText().trim());
-                    cliente.setDni(dniField.getText().trim());
-                    cliente.setEdad(Integer.parseInt(edadField.getText().trim()));
+                    cliente.setDni(dni);
+                    cliente.setEdad(edad);
                     TipoMembresia tipoSeleccionado = (TipoMembresia) tipoMembresiaComboBox.getSelectedItem();
                     cliente.setTipoMembresia(tipoSeleccionado.name()); // Convierte a String el nombre de la enum
+                    Actividad.TipoActividad tposeleccionado =(Actividad.TipoActividad) tipoActividadComboBox.getSelectedItem();
+                    cliente.setActividad(tposeleccionado.name());
 
                     cliente.setEstadoPago(estadoPagoCheck.isSelected());
 
@@ -272,6 +370,7 @@ public class ABMCliente extends JPanel {
                 }
             }
         });
+
 
         // Acción del botón eliminar
         eliminarButton.addActionListener(new ActionListener() {
@@ -289,6 +388,14 @@ public class ABMCliente extends JPanel {
                     JOptionPane.showMessageDialog(null, resultado);
                     limpiarCampos();
                 }
+            }
+        });
+
+        // Acción del botón Limpiar
+        limpiarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiarCampos();  // Llama a la función que limpia todos los campos
             }
         });
 
@@ -333,7 +440,8 @@ public class ABMCliente extends JPanel {
                     cliente.getEmail(),
                     cliente.getEdad(),
                     cliente.getTipoMembresia(),
-                    cliente.isEstadoPago() ? "Pagado" : "Pendiente"
+                    cliente.isEstadoPago() ? "Pagado" : "Pendiente",
+                    cliente.getActividad()
             });
         }
     }
@@ -355,4 +463,5 @@ public class ABMCliente extends JPanel {
         }
         descripcionTextArea.setText(descripcion); // Actualiza el área de texto con la descripción
     }
+
 }
