@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ABMCliente extends JPanel {
@@ -304,7 +306,15 @@ public class ABMCliente extends JPanel {
     // Listar todos los clientes
     private void listarClientes() {
         List<Cliente> clientes = clienteController.listarClientes();
-        modeloTabla.setRowCount(0);  // Limpiar tabla antes de cargar los datos
+        // Ordenar la lista de clientes por apellido en orden ascendente
+        Collections.sort(clientes, new Comparator<Cliente>() {
+            @Override
+            public int compare(Cliente c1, Cliente c2) {
+                return c1.getApellido().compareTo(c2.getApellido());  // Ordenar por apellido
+            }
+        });
+        // Limpiar tabla antes de cargar los datos
+        modeloTabla.setRowCount(0);
 
         for (Cliente cliente : clientes) {
             modeloTabla.addRow(new Object[]{
