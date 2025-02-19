@@ -2,41 +2,37 @@ package View;
 
 import Controller.ClienteController;
 import Model.Entity.Cliente;
+import Model.Entity.Membresia;
+import Model.Entity.Membresia.TipoMembresia;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ABMCliente extends JFrame {
+public class ABMCliente extends JPanel {
 
-    private JTextField idClienteField;
-    private JTextField nombreField;
-    private JTextField apellidoField;
-    private JTextField direccionField;
-    private JTextField telefonoField;
-    private JTextField emailField;
-    private JTextField dniField;
-    private JTextField edadField;
-    private JTextField tipoMembresiaField;
+    private JTextField idClienteField, nombreField, apellidoField, direccionField, telefonoField, emailField, dniField, edadField;
     private JCheckBox estadoPagoCheck;
-
+    private JTable tablaClientes;
+    private DefaultTableModel modeloTabla;
     private ClienteController clienteController;
+    private JComboBox<TipoMembresia> tipoMembresiaComboBox;
+    private JTextArea descripcionTextArea;
 
     public ABMCliente() {
-        clienteController = new ClienteController(); // Instancia del controlador
+        clienteController = new ClienteController();
 
-        setTitle("ABM Cliente");
-        setSize(800, 600); // Ajustamos el tamaño de la ventana
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null); // Usamos diseño absoluto para control manual de componentes
+        setSize(800, 600);
+        setLayout(null);
 
-        // Inicializar componentes visuales
+        // Etiquetas y campos de texto
         JLabel idClienteLabel = new JLabel("ID Cliente:");
         idClienteLabel.setBounds(30, 30, 150, 25);
         idClienteField = new JTextField();
         idClienteField.setBounds(180, 30, 150, 25);
-        idClienteField.setEditable(false); // El ID es autogenerado, por eso no es editable.
+        idClienteField.setEditable(false);
 
         JLabel nombreLabel = new JLabel("Nombre:");
         nombreLabel.setBounds(30, 70, 150, 25);
@@ -75,14 +71,27 @@ public class ABMCliente extends JFrame {
 
         JLabel tipoMembresiaLabel = new JLabel("Tipo de Membresía:");
         tipoMembresiaLabel.setBounds(30, 350, 150, 25);
-        tipoMembresiaField = new JTextField();
-        tipoMembresiaField.setBounds(180, 350, 150, 25);
+
+        // JComboBox para seleccionar tipo de membresía
+        tipoMembresiaComboBox = new JComboBox<>(TipoMembresia.values());
+        tipoMembresiaComboBox.setBounds(180, 350, 150, 25);
+
+        // JTextArea para mostrar la descripción de la membresía
+        JLabel descripcionLabel = new JLabel("Descripción:");
+        descripcionLabel.setBounds(30, 390, 150, 25);
+
+        descripcionTextArea = new JTextArea();
+        descripcionTextArea.setBounds(180, 390, 200, 50);
+        descripcionTextArea.setEditable(false);
+        descripcionTextArea.setLineWrap(true);
+        descripcionTextArea.setWrapStyleWord(true);
 
         JLabel estadoPagoLabel = new JLabel("Estado de Pago:");
-        estadoPagoLabel.setBounds(30, 390, 150, 25);
+        estadoPagoLabel.setBounds(30, 460, 150, 25);
         estadoPagoCheck = new JCheckBox();
-        estadoPagoCheck.setBounds(180, 390, 150, 25);
+        estadoPagoCheck.setBounds(180, 460, 150, 25);
 
+        // Botones
         JButton agregarButton = new JButton("Agregar");
         agregarButton.setBounds(400, 70, 150, 40);
 
@@ -95,7 +104,27 @@ public class ABMCliente extends JFrame {
         JButton eliminarButton = new JButton("Eliminar");
         eliminarButton.setBounds(400, 310, 150, 40);
 
-        // Añadir componentes al JFrame
+        JButton listarButton = new JButton("Listar");
+        listarButton.setBounds(400, 390, 150, 40);
+
+        // Agregar tabla para listar clientes
+        modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("ID");
+        modeloTabla.addColumn("Nombre");
+        modeloTabla.addColumn("Apellido");
+        modeloTabla.addColumn("DNI");
+        modeloTabla.addColumn("Direccion");
+        modeloTabla.addColumn("Telefono");
+        modeloTabla.addColumn("Email");
+        modeloTabla.addColumn("Edad");
+        modeloTabla.addColumn("Membresia");
+        modeloTabla.addColumn("Pago");
+
+        tablaClientes = new JTable(modeloTabla);
+        JScrollPane scrollPane = new JScrollPane(tablaClientes);
+        scrollPane.setBounds(30, 500, 700, 100);
+
+        // Agregar componentes al panel
         add(idClienteLabel);
         add(idClienteField);
         add(nombreLabel);
@@ -113,15 +142,35 @@ public class ABMCliente extends JFrame {
         add(edadLabel);
         add(edadField);
         add(tipoMembresiaLabel);
-        add(tipoMembresiaField);
+        add(tipoMembresiaComboBox);
+        add(descripcionLabel);
+        add(descripcionTextArea);
         add(estadoPagoLabel);
         add(estadoPagoCheck);
         add(agregarButton);
         add(buscarButton);
         add(modificarButton);
         add(eliminarButton);
+        add(listarButton);
+        add(scrollPane);
 
-        // Funcionalidad del botón agregar
+        // Acción para mostrar la descripción cuando cambie la selección en el JComboBox
+        tipoMembresiaComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarDescripcionMembresia();
+            }
+        });
+
+        // Acción del botón listar
+        listarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listarClientes();
+            }
+        });
+
+        // Acción del botón agregar
         agregarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -129,113 +178,115 @@ public class ABMCliente extends JFrame {
                     Cliente cliente = new Cliente();
                     cliente.setNombre(nombreField.getText());
                     cliente.setApellido(apellidoField.getText());
+                    cliente.setDni(dniField.getText());
                     cliente.setDireccion(direccionField.getText());
                     cliente.setTelefono(telefonoField.getText());
                     cliente.setEmail(emailField.getText());
-                    cliente.setDni(dniField.getText());
                     cliente.setEdad(Integer.parseInt(edadField.getText()));
-                    cliente.setTipoMembresia(tipoMembresiaField.getText());
                     cliente.setEstadoPago(estadoPagoCheck.isSelected());
+
+                    // Obtener tipo de membresía seleccionado
+                    TipoMembresia tipoMembresiaSeleccionado = (TipoMembresia) tipoMembresiaComboBox.getSelectedItem();
+                    cliente.setTipoMembresia(tipoMembresiaSeleccionado.toString()); // Asignar tipo de membresía al cliente
 
                     String resultado = clienteController.agregarCliente(cliente);
                     JOptionPane.showMessageDialog(null, resultado);
-
                     limpiarCampos();
+
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al agregar cliente: " + ex.getMessage());
                 }
             }
         });
 
-        // Funcionalidad del botón buscar
+        // Acción del botón buscar
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nombre = nombreField.getText().trim();
                 String dni = dniField.getText().trim();
-
-                if (nombre.isEmpty() && dni.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre o DNI para buscar.");
+                if (dni.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
                     return;
                 }
 
                 List<Cliente> clientes = clienteController.buscarClientes(dni);
-
-                if (clientes == null || clientes.isEmpty()) {
+                if (clientes.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "No se encontró ningún cliente.");
                 } else {
-                    Cliente cliente = clientes.get(0); // Mostrar el primer resultado encontrado
+                    Cliente cliente = clientes.get(0);
                     idClienteField.setText(String.valueOf(cliente.getIdCliente()));
                     nombreField.setText(cliente.getNombre());
                     apellidoField.setText(cliente.getApellido());
+                    dniField.setText(cliente.getDni());
                     direccionField.setText(cliente.getDireccion());
                     telefonoField.setText(cliente.getTelefono());
                     emailField.setText(cliente.getEmail());
-                    dniField.setText(cliente.getDni());
                     edadField.setText(String.valueOf(cliente.getEdad()));
-                    tipoMembresiaField.setText(cliente.getTipoMembresia());
-                    estadoPagoCheck.setSelected(cliente.isEstadoPago());
+
                 }
             }
         });
 
-        // Funcionalidad del botón modificar
+
+        // Acción del botón modificar
         modificarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (idClienteField.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Debe buscar y seleccionar un cliente antes de modificar.");
+                    // Verificar que el ID de cliente no sea nulo o vacío
+                    if (idClienteField.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Error: Debe seleccionar un cliente antes de modificar.");
                         return;
                     }
 
                     Cliente cliente = new Cliente();
-                    cliente.setIdCliente(Integer.parseInt(idClienteField.getText())); // Modificación por ID
-                    cliente.setNombre(nombreField.getText());
-                    cliente.setApellido(apellidoField.getText());
-                    cliente.setDireccion(direccionField.getText());
-                    cliente.setTelefono(telefonoField.getText());
-                    cliente.setEmail(emailField.getText());
-                    cliente.setDni(dniField.getText());
-                    cliente.setEdad(Integer.parseInt(edadField.getText()));
-                    cliente.setTipoMembresia(tipoMembresiaField.getText());
+                    cliente.setIdCliente(Integer.parseInt(idClienteField.getText().trim())); // Conversión segura
+                    cliente.setNombre(nombreField.getText().trim());
+                    cliente.setApellido(apellidoField.getText().trim());
+                    cliente.setDireccion(direccionField.getText().trim());
+                    cliente.setTelefono(telefonoField.getText().trim());
+                    cliente.setEmail(emailField.getText().trim());
+                    cliente.setDni(dniField.getText().trim());
+                    cliente.setEdad(Integer.parseInt(edadField.getText().trim()));
+                    TipoMembresia tipoSeleccionado = (TipoMembresia) tipoMembresiaComboBox.getSelectedItem();
+                    cliente.setTipoMembresia(tipoSeleccionado.name()); // Convierte a String el nombre de la enum
+
                     cliente.setEstadoPago(estadoPagoCheck.isSelected());
 
+                    // Llamar al método de modificar en el controlador
                     String resultado = clienteController.modificarCliente(cliente);
                     JOptionPane.showMessageDialog(null, resultado);
-
-                    limpiarCampos(); // Limpia los campos después de modificar
+                    limpiarCampos();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Error: ID Cliente o Edad inválido.");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error al modificar cliente: " + ex.getMessage());
                 }
             }
         });
 
-        // Funcionalidad del botón eliminar
+        // Acción del botón eliminar
         eliminarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    String dni = dniField.getText().trim();
+                String dni = dniField.getText().trim();
+                if (dni.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un DNI para eliminar.");
+                    return;
+                }
 
-                    if (dni.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Debe ingresar un DNI para eliminar.");
-                        return;
-                    }
-
-                    int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar el cliente con DNI: " + dni + "?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-                    if (confirmacion == JOptionPane.YES_OPTION) {
-                        String resultado = clienteController.eliminarClientePorDNI(dni);
-                        JOptionPane.showMessageDialog(null, resultado);
-                        limpiarCampos(); // Limpia los campos tras la eliminación
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error al eliminar cliente: " + ex.getMessage());
+                int confirm = JOptionPane.showConfirmDialog(null, "¿Eliminar cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    String resultado = clienteController.eliminarClientePorDNI(dni);
+                    JOptionPane.showMessageDialog(null, resultado);
+                    limpiarCampos();
                 }
             }
         });
+
     }
 
+    // Limpiar campos después de agregar/modificar/eliminar
     private void limpiarCampos() {
         idClienteField.setText("");
         nombreField.setText("");
@@ -245,21 +296,47 @@ public class ABMCliente extends JFrame {
         emailField.setText("");
         dniField.setText("");
         edadField.setText("");
-        tipoMembresiaField.setText("");
+        tipoMembresiaComboBox.setSelectedIndex(0);
+        descripcionTextArea.setText(""); // Limpiar la descripción
         estadoPagoCheck.setSelected(false);
     }
 
-    public static void main(String[] args) {
-        ABMCliente abmCliente = new ABMCliente();
-        abmCliente.setVisible(true);
+    // Listar todos los clientes
+    private void listarClientes() {
+        List<Cliente> clientes = clienteController.listarClientes();
+        modeloTabla.setRowCount(0);  // Limpiar tabla antes de cargar los datos
+
+        for (Cliente cliente : clientes) {
+            modeloTabla.addRow(new Object[]{
+                    cliente.getIdCliente(),
+                    cliente.getNombre(),
+                    cliente.getApellido(),
+                    cliente.getDni(),
+                    cliente.getDireccion(),
+                    cliente.getTelefono(),
+                    cliente.getEmail(),
+                    cliente.getEdad(),
+                    cliente.getTipoMembresia(),
+                    cliente.isEstadoPago() ? "Pagado" : "Pendiente"
+            });
+        }
+    }
+
+    // Actualiza la descripción en función del tipo de membresía seleccionado
+    private void actualizarDescripcionMembresia() {
+        TipoMembresia tipoSeleccionado = (TipoMembresia) tipoMembresiaComboBox.getSelectedItem();
+        String descripcion = "";
+        switch (tipoSeleccionado) {
+            case SILVER:
+                descripcion = "Acceso al gimnasio 3 veces por semana";
+                break;
+            case GOLDEN:
+                descripcion = "Acceso libre al gimnasio";
+                break;
+            case DIAMANT:
+                descripcion = "Acceso libre al gimnasio y a todas las actividades";
+                break;
+        }
+        descripcionTextArea.setText(descripcion); // Actualiza el área de texto con la descripción
     }
 }
-
-
-
-
-
-
-
-
-

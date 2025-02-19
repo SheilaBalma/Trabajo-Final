@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ABMEmpleado extends JFrame {
+public class ABMEmpleado extends JPanel {
     private JTextField nombreField;
     private JTextField apellidoField;
     private JTextField direccionField;
@@ -20,9 +20,8 @@ public class ABMEmpleado extends JFrame {
     public ABMEmpleado() {
         empleadoController = new EmpleadoController(); // Instancia del controlador
 
-        setTitle("ABM Empleado");
+
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
         // Inicializar componentes visuales

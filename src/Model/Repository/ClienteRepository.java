@@ -12,9 +12,3 @@ public interface ClienteRepository {
     List<Cliente> buscar( String dni) throws SQLException;
     List<Cliente> list() throws SQLException;
 }
-
-
-
-
-
-

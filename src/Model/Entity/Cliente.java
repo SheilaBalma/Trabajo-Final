@@ -9,10 +9,11 @@ public class Cliente {
     private String email;
     private String dni;
     private int edad;
-    private String tipoMembresia;
+    private String tipoMembresia; // Se mantiene como String
+    private String actividad; // Se agrega el campo actividad
     private boolean estadoPago;
 
-    // Getters y Setters para cada campo
+    // Getters y Setters
     public int getIdCliente() {
         return idCliente;
     }
@@ -85,6 +86,14 @@ public class Cliente {
         this.tipoMembresia = tipoMembresia;
     }
 
+    public String getActividad() {
+        return actividad;
+    }
+
+    public void setActividad(String actividad) {
+        this.actividad = actividad;
+    }
+
     public boolean isEstadoPago() {
         return estadoPago;
     }
@@ -93,5 +102,3 @@ public class Cliente {
         this.estadoPago = estadoPago;
     }
 }
-
-

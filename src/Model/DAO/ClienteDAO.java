@@ -159,12 +159,3 @@ public class ClienteDAO implements ClienteRepository {
         return clientes;
     }
 }
-
-
-
-
-
-
-
-
-
