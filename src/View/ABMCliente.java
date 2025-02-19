@@ -224,7 +224,13 @@ public class ABMCliente extends JPanel {
                     telefonoField.setText(cliente.getTelefono());
                     emailField.setText(cliente.getEmail());
                     edadField.setText(String.valueOf(cliente.getEdad()));
+                    // Aquí asignamos los valores para la membresía y estado de pago
+                    // Establecer el estado de pago
+                    estadoPagoCheck.setSelected(cliente.isEstadoPago());
 
+                    // Establecer el tipo de membresía
+                    TipoMembresia tipoSeleccionado = TipoMembresia.valueOf(cliente.getTipoMembresia()); // Usamos el valor del string y lo convertimos al enum
+                    tipoMembresiaComboBox.setSelectedItem(tipoSeleccionado);  // Establecemos el tipo de membresía en el ComboBox
                 }
             }
         });
