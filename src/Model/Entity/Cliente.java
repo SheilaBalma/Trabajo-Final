@@ -1,6 +1,6 @@
 package Model.Entity;
 
-public class Cliente {
+public class Cliente extends Persona {
     private int idCliente;
     private String nombre;
     private String apellido;
