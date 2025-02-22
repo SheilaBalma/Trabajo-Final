@@ -17,10 +17,8 @@ public class MenuPrincipal extends JFrame {
         this.setLayout(new BorderLayout());
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("ABM Empleado", new ABMEmpleado()); // Ahora es JPanel
-        tabbedPane.addTab("ABM Cliente", new ABMCliente());   // Ahora es JPanel
-
-       // tabbedPane.addTab("ABM Membresía", new ABMMembresia()); // Aquí también agregamos el panel de membresía
+        tabbedPane.addTab("ABM Empleado", new ABMEmpleado());
+        tabbedPane.addTab("ABM Cliente", new ABMCliente());
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }

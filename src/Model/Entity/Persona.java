@@ -11,6 +11,10 @@ public abstract class Persona {
 public Persona(){
 
 }
+
+    public Persona(String nombre, String apellido, String telefono, String email) {
+    }
+
     // Constructor
     public Persona(String nombre, String apellido, String dirección, String telefono, String email) {
         this.nombre = nombre;
@@ -60,18 +64,7 @@ public Persona(){
     public void setEmail(String email) {
         this.email = email;
     }
-
-    // Método equals para comparar objetos Persona
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Persona persona = (Persona) o;
-        return Objects.equals(nombre, persona.nombre) &&
-                Objects.equals(apellido, persona.apellido) &&
-                Objects.equals(email, persona.email);
-    }
-
+    
     // Método hashCode para generar hash basado en los atributos relevantes
     @Override
     public int hashCode() {

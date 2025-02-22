@@ -11,5 +11,5 @@ public interface EmpleadoRepository {
     void eliminarEmpleado(String dni) throws SQLException;
     List<Empleado> buscarEmpleado(String dni) throws SQLException;
     List<Empleado> listarEmpleados() throws SQLException;
-    public boolean ExisteDni(String dni) throws SQLException; // Añadir este método
+    public boolean ExisteDni(String dni) throws SQLException;
 }

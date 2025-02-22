@@ -1,6 +1,6 @@
 package View;
 
-import Model.DAO.ActividadDAO;
+import Controller.ActividadController;
 import Model.Entity.Actividad;
 import Model.Entity.Actividad.TipoActividad;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class ABMActividad extends JPanel {
-    private ActividadDAO actividadDAO = new ActividadDAO();
+    private ActividadController actividadController;
     private JComboBox<TipoActividad> tipoComboBox;
     private JButton guardarButton;
 
@@ -38,7 +38,7 @@ public class ABMActividad extends JPanel {
         TipoActividad tipo = (TipoActividad) this.tipoComboBox.getSelectedItem();
         Actividad actividad = new Actividad(tipo);
 
-        this.actividadDAO.guardarActividad(actividad);
+        this.actividadController.guardarActividad(actividad);
         JOptionPane.showMessageDialog(this, "Actividad guardada exitosamente.");
     }
 }

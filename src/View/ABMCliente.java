@@ -3,9 +3,7 @@ package View;
 import Controller.ClienteController;
 import Model.Entity.Actividad;
 import Model.Entity.Cliente;
-import Model.Entity.Membresia;
 import Model.Entity.Membresia.TipoMembresia;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -117,7 +115,6 @@ public class ABMCliente extends JPanel {
         JButton listarButton = new JButton("Listar");
         listarButton.setBounds(400, 390, 150, 40);
 
-        // Botón Limpiar
         JButton limpiarButton = new JButton("Limpiar");
         limpiarButton.setBounds(600, 225, 150, 40);
 
@@ -280,8 +277,6 @@ public class ABMCliente extends JPanel {
                     telefonoField.setText(cliente.getTelefono());
                     emailField.setText(cliente.getEmail());
                     edadField.setText(String.valueOf(cliente.getEdad()));
-                    // Aquí asignamos los valores para la membresía y estado de pago
-                    // Establecer el estado de pago
                     estadoPagoCheck.setSelected(cliente.isEstadoPago());
 
                     // Establecer el tipo de membresía
@@ -344,7 +339,7 @@ public class ABMCliente extends JPanel {
                     }
 
                     Cliente cliente = new Cliente();
-                    cliente.setIdCliente(Integer.parseInt(idClienteField.getText().trim())); // Conversión segura
+                    cliente.setIdCliente(Integer.parseInt(idClienteField.getText().trim()));
                     cliente.setNombre(nombreField.getText().trim());
                     cliente.setApellido(apellidoField.getText().trim());
                     cliente.setDireccion(direccionField.getText().trim());

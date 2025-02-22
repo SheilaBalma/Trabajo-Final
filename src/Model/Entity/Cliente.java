@@ -2,16 +2,30 @@ package Model.Entity;
 
 public class Cliente extends Persona {
     private int idCliente;
-    private String nombre;
-    private String apellido;
-    private String direccion;
-    private String telefono;
-    private String email;
     private String dni;
     private int edad;
-    private String tipoMembresia; // Se mantiene como String
-    private String actividad; // Se agrega el campo actividad
+    private String direccion; // Se agrega aquí
+    private String tipoMembresia;
+    private String actividad;
     private boolean estadoPago;
+
+    // Constructor por defecto
+    public Cliente() {
+        super();
+    }
+
+    // Constructor con parámetros
+    public Cliente(int idCliente, String nombre, String apellido, String direccion, String telefono, String email,
+                   String dni, int edad, String tipoMembresia, String actividad, boolean estadoPago) {
+        super(nombre, apellido, telefono, email);
+        this.idCliente = idCliente;
+        this.direccion = direccion;
+        this.dni = dni;
+        this.edad = edad;
+        this.tipoMembresia = tipoMembresia;
+        this.actividad = actividad;
+        this.estadoPago = estadoPago;
+    }
 
     // Getters y Setters
     public int getIdCliente() {
@@ -22,44 +36,12 @@ public class Cliente extends Persona {
         this.idCliente = idCliente;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
     public String getDireccion() {
         return direccion;
     }
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getDni() {
@@ -100,5 +82,23 @@ public class Cliente extends Persona {
 
     public void setEstadoPago(boolean estadoPago) {
         this.estadoPago = estadoPago;
+    }
+
+    // Método toString para imprimir información del Cliente
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "idCliente=" + idCliente +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", direccion='" + direccion + '\'' + // Se incluye aquí
+                ", telefono='" + telefono + '\'' +
+                ", email='" + email + '\'' +
+                ", dni='" + dni + '\'' +
+                ", edad=" + edad +
+                ", tipoMembresia='" + tipoMembresia + '\'' +
+                ", actividad='" + actividad + '\'' +
+                ", estadoPago=" + estadoPago +
+                '}';
     }
 }

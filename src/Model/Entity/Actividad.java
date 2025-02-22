@@ -2,7 +2,7 @@ package Model.Entity;
 
 public class Actividad {
     public enum TipoActividad {
-        YOGA, CROSSFIT, ZUMBA, SPINNING
+        FUNCIONAL, PILATES, RUNNING, MUSCULACION
     }
 
     private TipoActividad tipo;

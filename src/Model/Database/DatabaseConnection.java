@@ -9,11 +9,8 @@ public class DatabaseConnection {
     private static final String USER = "root";
     private static final String PASSWORD = "Sheila0403";
 
-//    private static Connection connection;
-
     // Método para establecer la conexión con la base de datos
     public static Connection getConnection() {
-//        if (connection == null) {
         Connection connection = null;
             try {
                 // Cargar el driver de MySQL
@@ -26,22 +23,8 @@ public class DatabaseConnection {
                 e.printStackTrace();
                 System.out.println("Error al conectar a la base de datos");
             }
-//        }
         return connection;
     }
-
-    // Método para cerrar la conexión
-
-//    public static void closeConnection() {
-//        if (connection != null) {
-//            try {
-//                connection.close();
-//                System.out.println("Conexión cerrada");
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }
 
 

@@ -1,11 +1,7 @@
 package View;
 
 import Controller.EmpleadoController;
-import Model.Entity.Actividad;
-import Model.Entity.Cliente;
 import Model.Entity.Empleado;
-import Model.Entity.Membresia;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -21,14 +17,12 @@ public class ABMEmpleado extends JPanel {
     private JTextField telefonoField;
     private JTextField emailField;
     private JTextField dniField;
-
-    private JTable empleadosTable; // Tabla para mostrar los empleados
-    private DefaultTableModel tableModel; // Modelo de la tabla
-
+    private JTable empleadosTable;
+    private DefaultTableModel tableModel;
     private EmpleadoController empleadoController;
 
     public ABMEmpleado() {
-        empleadoController = new EmpleadoController(); // Instancia del controlador
+        empleadoController = new EmpleadoController();
 
         setSize(800, 600);
         setLayout(null);
@@ -77,9 +71,8 @@ public class ABMEmpleado extends JPanel {
         eliminarButton.setBounds(400, 210, 150, 40);
 
         JButton listarButton = new JButton("Listar Empleados");
-        listarButton.setBounds(400, 270, 150, 40); // Botón para listar empleados
+        listarButton.setBounds(400, 270, 150, 40);
 
-        // Botón Limpiar
         JButton limpiarButton = new JButton("Limpiar");
         limpiarButton.setBounds(600, 150, 150, 40);
 
@@ -94,7 +87,7 @@ public class ABMEmpleado extends JPanel {
 
         empleadosTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(empleadosTable);
-        scrollPane.setBounds(30, 350, 700, 250); // Ubicación y tamaño de la tabla
+        scrollPane.setBounds(30, 350, 700, 250);
         add(scrollPane);
 
         // Añadir los componentes al JPanel
@@ -114,7 +107,7 @@ public class ABMEmpleado extends JPanel {
         add(buscarButton);
         add(modificarButton);
         add(eliminarButton);
-        add(listarButton); // Agregar botón de listar empleados
+        add(listarButton);
         add(limpiarButton);
 
         // Funcionalidad del botón agregar
@@ -151,7 +144,7 @@ public class ABMEmpleado extends JPanel {
                             direccionField.getText(),
                             telefono,
                             emailField.getText(),
-                            dni // Agregar el DNI
+                            dni
                     );
 
                     // Llamar al controlador para agregar el empleado
@@ -263,11 +256,11 @@ public class ABMEmpleado extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                      List<Empleado> empleados = empleadoController.listarEmpleados();
-                    // Ordenar la lista de clientes por apellido en orden ascendente
+                    // Ordenar por apellido alfabeticamente
                     Collections.sort(empleados, new Comparator<Empleado>() {
                         @Override
                         public int compare(Empleado c1, Empleado c2) {
-                            return c1.getApellido().compareTo(c2.getApellido());  // Ordenar por apellido
+                            return c1.getApellido().compareTo(c2.getApellido());
                         }
                     });
                     // Limpiar tabla antes de cargar los datos
@@ -298,13 +291,14 @@ public class ABMEmpleado extends JPanel {
         });
     }
 
+    // Limpia los campos
     private void limpiarCampos() {
         nombreField.setText("");
         apellidoField.setText("");
         direccionField.setText("");
         telefonoField.setText("");
         emailField.setText("");
-        dniField.setText(""); // Limpiar el campo DNI
+        dniField.setText("");
     }
 
     public static void main(String[] args) {
